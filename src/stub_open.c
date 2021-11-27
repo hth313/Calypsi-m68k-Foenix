@@ -1,5 +1,6 @@
 #include <mcp/syscalls.h>
 #include <stddef.h>
+#include <string.h>
 #include "constants.h"
 
 #define	FA_READ             0x01
