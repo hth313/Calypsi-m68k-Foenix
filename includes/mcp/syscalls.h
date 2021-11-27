@@ -92,7 +92,7 @@
 /*
  * Call into the kernel (provided by assembly)
  */
-extern int32_t syscall(t_syscall_params params);
+extern int32_t syscall(int32_t function, p_syscall_params params);
 
 /***
  *** Core system calls

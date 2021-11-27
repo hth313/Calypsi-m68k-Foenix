@@ -11,8 +11,8 @@
  * result = the result code to return to the kernel
  */
 void sys_exit(short result) {
-    t_syscall_params params = {.func = KFN_EXIT, .arg1 = result};
-    syscall(params);
+    t_syscall_params params = {.arg1 = result};
+    syscall(KFN_EXIT, &params);
 }
 
 /*
@@ -21,8 +21,8 @@ void sys_exit(short result) {
  * NOTE: this is actually provided in the low level assembly
  */
 void sys_int_enable_all() {
-    t_syscall_params params = {.func = KFN_INT_ENABLE_ALL};
-    syscall(params);
+    t_syscall_params params = {0};
+    syscall(KFN_INT_ENABLE_ALL, &params);
 }
 
 /*
@@ -31,8 +31,8 @@ void sys_int_enable_all() {
  * NOTE: this is actually provided in the low level assembly
  */
 void sys_int_disable_all() {
-    t_syscall_params params = {.func = KFN_INT_DISABLE_ALL};
-    syscall(params);
+    t_syscall_params params = {0};
+    syscall(KFN_INT_DISABLE_ALL, &params);
 }
 
 /*
@@ -42,8 +42,8 @@ void sys_int_disable_all() {
  * n = the number of the interrupt: n[7..4] = group number, n[3..0] = individual number.
  */
 void sys_int_disable(unsigned short n) {
-    t_syscall_params params = {.func = KFN_INT_DISABLE, .arg1 = n};
-    syscall(params);
+    t_syscall_params params = {.arg1 = n};
+    syscall(KFN_INT_DISABLE, &params);
 }
 
 /*
@@ -53,8 +53,8 @@ void sys_int_disable(unsigned short n) {
  * n = the number of the interrupt
  */
 void sys_int_enable(unsigned short n) {
-    t_syscall_params params = {.func = KFN_INT_ENABLE, .arg1 = n};
-    syscall(params);
+    t_syscall_params params = {.arg1 = n};
+    syscall(KFN_INT_ENABLE, &params);
 }
 
 /*
@@ -64,8 +64,8 @@ void sys_int_enable(unsigned short n) {
  * info = pointer to a s_sys_info structure to fill out
  */
 void sys_get_info(p_sys_info info) {
-    t_syscall_params params = {.func = KFN_SYS_GET_INFO, .arg1 = info};
-    syscall(params);
+    t_syscall_params params = {.arg1 = info};
+    syscall(KFN_SYS_GET_INFO, &params);
 }
 
 /*
@@ -79,8 +79,8 @@ void sys_get_info(p_sys_info info) {
  * the pointer to the previous interrupt handler
  */
 p_int_handler sys_int_register(unsigned short n, p_int_handler handler) {
-    t_syscall_params params = {.func = KFN_INT_REGISTER, .arg1 = n, .arg2 = handler};
-    return (p_int_handler) syscall(params);
+    t_syscall_params params = {.arg1 = n, .arg2 = handler};
+    return (p_int_handler) syscall(KFN_INT_REGISTER, &params);
 }
 
 /*
@@ -93,8 +93,8 @@ p_int_handler sys_int_register(unsigned short n, p_int_handler handler) {
  * non-zero if interrupt n is pending, 0 if not
  */
 short sys_int_pending(unsigned short n) {
-    t_syscall_params params = {.func = KFN_INT_PENDING, .arg1 = n};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = n};
+    return syscall(KFN_INT_PENDING, &params);
 }
 
 /*
@@ -104,8 +104,8 @@ short sys_int_pending(unsigned short n) {
  * n = the number of the interrupt: n[7..4] = group number, n[3..0] = individual number.
  */
 void sys_int_clear(unsigned short n) {
-    t_syscall_params params = {.func = KFN_INT_CLEAR, .arg1 = n};
-    syscall(params);
+    t_syscall_params params = {.arg1 = n};
+    syscall(KFN_INT_CLEAR, &params);
 }
 
 /***
@@ -122,8 +122,8 @@ void sys_int_clear(unsigned short n) {
  *  the value read (if negative, error)
  */
 short sys_chan_read_b(short channel) {
-    t_syscall_params params = {.func = KFN_CHAN_READ_B, .arg1 = channel};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = channel};
+    return syscall(KFN_CHAN_READ_B, &params);
 }
 
 /*
@@ -138,8 +138,8 @@ short sys_chan_read_b(short channel) {
  *  number of bytes read, any negative number is an error code
  */
 short sys_chan_read(short channel, unsigned char * buffer, short size) {
-    t_syscall_params params = {.func = KFN_CHAN_READ, .arg1 = channel, .arg2 = buffer, .arg3 = size};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = channel, .arg2 = buffer, .arg3 = size};
+    return syscall(KFN_CHAN_READ, &params);
 }
 
 /*
@@ -154,8 +154,8 @@ short sys_chan_read(short channel, unsigned char * buffer, short size) {
  *  number of bytes read, any negative number is an error code
  */
 short sys_chan_readline(short channel, unsigned char * buffer, short size) {
-    t_syscall_params params = {.func = KFN_CHAN_READ_LINE, .arg1 = channel, .arg2 = buffer, .arg3 = size};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = channel, .arg2 = buffer, .arg3 = size};
+    return syscall(KFN_CHAN_READ_LINE, &params);
 }
 
 
@@ -170,8 +170,8 @@ short sys_chan_readline(short channel, unsigned char * buffer, short size) {
  *  0 on success, a negative value on error
  */
 short sys_chan_write_b(short channel, unsigned char b) {
-    t_syscall_params params = {.func = KFN_CHAN_WRITE_B, .arg1 = channel, .arg2 = b};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = channel, .arg2 = b};
+    return syscall(KFN_CHAN_WRITE_B, &params);
 }
 
 /*
@@ -185,8 +185,8 @@ short sys_chan_write_b(short channel, unsigned char b) {
  *  number of bytes written, any negative number is an error code
  */
 short sys_chan_write(short channel, unsigned char * buffer, short size) {
-    t_syscall_params params = {.func = KFN_CHAN_WRITE, .arg1 = channel, .arg2 = buffer, .arg3 = size};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = channel, .arg2 = buffer, .arg3 = size};
+    return syscall(KFN_CHAN_WRITE, &params);
 }
 
 /*
@@ -199,8 +199,8 @@ short sys_chan_write(short channel, unsigned char * buffer, short size) {
  *  the status of the device
  */
 short sys_chan_status(short channel) {
-    t_syscall_params params = {.func = KFN_CHAN_STATUS, .arg1 = channel};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = channel};
+    return syscall(KFN_CHAN_STATUS, &params);
 }
 
 /*
@@ -213,8 +213,8 @@ short sys_chan_status(short channel) {
  *  0 on success, any negative number is an error code
  */
 short sys_chan_flush(short channel) {
-    t_syscall_params params = {.func = KFN_CHAN_FLUSH, .arg1 = channel};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = channel};
+    return syscall(KFN_CHAN_FLUSH, &params);
 }
 
 /*
@@ -229,8 +229,8 @@ short sys_chan_flush(short channel) {
  *  0 = success, a negative number is an error.
  */
 short sys_chan_seek(short channel, long position, short base) {
-    t_syscall_params params = {.func = KFN_CHAN_SEEK, .arg1 = channel, .arg2 = position, .arg3 = base};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = channel, .arg2 = position, .arg3 = base};
+    return syscall(KFN_CHAN_SEEK, &params);
 }
 
 /*
@@ -246,8 +246,8 @@ short sys_chan_seek(short channel, long position, short base) {
  *  0 on success, any negative number is an error code
  */
 short sys_chan_ioctrl(short channel, short command, uint8_t * buffer, short size) {
-    t_syscall_params params = {.func = KFN_CHAN_IOCTRL, .arg1 = channel, .arg2 = command, .arg3 = buffer, .arg4 = size};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = channel, .arg2 = command, .arg3 = buffer, .arg4 = size};
+    return syscall(KFN_CHAN_IOCTRL, &params);
 }
 
 /*
@@ -262,8 +262,8 @@ short sys_chan_ioctrl(short channel, short command, uint8_t * buffer, short size
  * the number of the channel opened, negative number on error
  */
 short sys_chan_open(short dev, uint8_t * path, short mode) {
-    t_syscall_params params = {.func = KFN_CHAN_OPEN, .arg1 = path, .arg2 = mode};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path, .arg2 = mode};
+    return syscall(KFN_CHAN_OPEN, &params);
 }
 
 /*
@@ -276,8 +276,8 @@ short sys_chan_open(short dev, uint8_t * path, short mode) {
  * nothing useful
  */
 short sys_chan_close(short chan) {
-    t_syscall_params params = {.func = KFN_CHAN_CLOSE, .arg1 = chan};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = chan};
+    return syscall(KFN_CHAN_CLOSE, &params);
 }
 
 /***
@@ -288,8 +288,8 @@ short sys_chan_close(short chan) {
 // Register a block device driver
 //
 short sys_bdev_register(p_dev_block device) {
-    t_syscall_params params = {.func = KFN_BDEV_REGISTER, .arg1 = device};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = device};
+    return syscall(KFN_BDEV_REGISTER, &params);
 }
 
 //
@@ -305,8 +305,8 @@ short sys_bdev_register(p_dev_block device) {
 //  number of bytes read, any negative number is an error code
 //
 short sys_bdev_read(short dev, long lba, unsigned char * buffer, short size) {
-    t_syscall_params params = {.func = KFN_BDEV_GETBLOCK, .arg1 = dev, .arg2 = lba, .arg3 = buffer, .arg4 = size};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = dev, .arg2 = lba, .arg3 = buffer, .arg4 = size};
+    return syscall(KFN_BDEV_GETBLOCK, &params);
 }
 
 //
@@ -322,8 +322,8 @@ short sys_bdev_read(short dev, long lba, unsigned char * buffer, short size) {
 //  number of bytes written, any negative number is an error code
 //
 short sys_bdev_write(short dev, long lba, const unsigned char * buffer, short size) {
-    t_syscall_params params = {.func = KFN_BDEV_PUTBLOCK, .arg1 = dev, .arg2 = lba, .arg3 = buffer, .arg4 = size};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = dev, .arg2 = lba, .arg3 = buffer, .arg4 = size};
+    return syscall(KFN_BDEV_PUTBLOCK, &params);
 }
 
 //
@@ -336,8 +336,8 @@ short sys_bdev_write(short dev, long lba, const unsigned char * buffer, short si
 //  the status of the device
 //
 short sys_bdev_status(short dev) {
-    t_syscall_params params = {.func = KFN_BDEV_STATUS, .arg1 = dev};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = dev};
+    return syscall(KFN_BDEV_STATUS, &params);
 }
 
 //
@@ -350,8 +350,8 @@ short sys_bdev_status(short dev) {
 //  0 on success, any negative number is an error code
 //
 short sys_bdev_flush(short dev) {
-    t_syscall_params params = {.func = KFN_BDEV_FLUSH, .arg1 = dev};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = dev};
+    return syscall(KFN_BDEV_FLUSH, &params);
 }
 
 //
@@ -367,8 +367,8 @@ short sys_bdev_flush(short dev) {
 //  0 on success, any negative number is an error code
 //
 short sys_bdev_ioctrl(short dev, short command, unsigned char * buffer, short size) {
-    t_syscall_params params = {.func = KFN_BDEV_IOCTRL, .arg1 = dev, .arg2 = command, .arg3 = buffer, .arg4 = size};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = dev, .arg2 = command, .arg3 = buffer, .arg4 = size};
+    return syscall(KFN_BDEV_IOCTRL, &params);
 }
 
 /*
@@ -386,8 +386,8 @@ short sys_bdev_ioctrl(short dev, short command, unsigned char * buffer, short si
  * the channel ID for the open file (negative if error)
  */
 short sys_fsys_open(const char * path, short mode) {
-    t_syscall_params params = {.func = KFN_OPEN, .arg1 = path, .arg2 = mode};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path, .arg2 = mode};
+    return syscall(KFN_OPEN, &params);
 }
 
 /**
@@ -400,8 +400,8 @@ short sys_fsys_open(const char * path, short mode) {
  * 0 on success, negative number on failure
  */
 short sys_fsys_close(short fd) {
-    t_syscall_params params = {.func = KFN_CLOSE, .arg1 = fd};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = fd};
+    return syscall(KFN_CLOSE, &params);
 }
 
 /**
@@ -414,8 +414,8 @@ short sys_fsys_close(short fd) {
  * the handle to the directory if >= 0. An error if < 0
  */
 short sys_fsys_opendir(const char * path) {
-    t_syscall_params params = {.func = KFN_OPENDIR, .arg1 = path};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path};
+    return syscall(KFN_OPENDIR, &params);
 }
 
 /**
@@ -428,8 +428,8 @@ short sys_fsys_opendir(const char * path) {
  * 0 on success, negative number on error
  */
 short sys_fsys_closedir(short dir) {
-    t_syscall_params params = {.func = KFN_CLOSEDIR, .arg1 = dir};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = dir};
+    return syscall(KFN_CLOSEDIR, &params);
 }
 
 /**
@@ -443,8 +443,8 @@ short sys_fsys_closedir(short dir) {
  * 0 on success, negative number on failure
  */
 short sys_fsys_readdir(short dir, p_file_info file) {
-    t_syscall_params params = {.func = KFN_READDIR, .arg1 = dir, .arg2 = file};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = dir, .arg2 = file};
+    return syscall(KFN_READDIR, &params);
 }
 
 /**
@@ -459,8 +459,8 @@ short sys_fsys_readdir(short dir, p_file_info file) {
  * the directory handle to use for subsequent calls if >= 0, error if negative
  */
 short sys_fsys_findfirst(const char * path, const char * pattern, p_file_info file) {
-    t_syscall_params params = {.func = KFN_FINDFIRST, .arg1 = path, .arg2 = pattern, .arg3 = file};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path, .arg2 = pattern, .arg3 = file};
+    return syscall(KFN_FINDFIRST, &params);
 }
 
 /**
@@ -474,8 +474,8 @@ short sys_fsys_findfirst(const char * path, const char * pattern, p_file_info fi
  * 0 on success, error if negative
  */
 short sys_fsys_findnext(short dir, p_file_info file) {
-    t_syscall_params params = {.func = KFN_FINDNEXT, .arg1 = dir, .arg2 = file};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = dir, .arg2 = file};
+    return syscall(KFN_FINDNEXT, &params);
 }
 
 /*
@@ -486,8 +486,8 @@ short sys_fsys_findnext(short dir, p_file_info file) {
  * label = buffer that will hold the label... should be at least 35 bytes
  */
 short sys_fsys_get_label(const char * path, char * label) {
-    t_syscall_params params = {.func = KFN_GET_LABEL, .arg1 = path, .arg2 = label};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path, .arg2 = label};
+    return syscall(KFN_GET_LABEL, &params);
 }
 
 /*
@@ -498,8 +498,8 @@ short sys_fsys_get_label(const char * path, char * label) {
  * label = buffer that holds the label
  */
 short sys_fsys_set_label(short drive, const char * label) {
-    t_syscall_params params = {.func = KFN_SET_LABEL, .arg1 = drive, .arg2 = label};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = drive, .arg2 = label};
+    return syscall(KFN_SET_LABEL, &params);
 }
 
 /**
@@ -512,8 +512,8 @@ short sys_fsys_set_label(short drive, const char * label) {
  * 0 on success, negative number on failure.
  */
 short sys_fsys_mkdir(const char * path) {
-    t_syscall_params params = {.func = KFN_MKDIR, .arg1 = path};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path};
+    return syscall(KFN_MKDIR, &params);
 }
 
 /**
@@ -526,8 +526,8 @@ short sys_fsys_mkdir(const char * path) {
  * 0 on success, negative number on failure.
  */
 short sys_fsys_delete(const char * path) {
-    t_syscall_params params = {.func = KFN_DELETE, .arg1 = path};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path};
+    return syscall(KFN_DELETE, &params);
 }
 
 /**
@@ -541,8 +541,8 @@ short sys_fsys_delete(const char * path) {
  * 0 on success, negative number on failure.
  */
 short sys_fsys_rename(const char * old_path, const char * new_path) {
-    t_syscall_params params = {.func = KFN_RENAME, .arg1 = old_path, .arg2 = new_path};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = old_path, .arg2 = new_path};
+    return syscall(KFN_RENAME, &params);
 }
 
 /**
@@ -555,8 +555,8 @@ short sys_fsys_rename(const char * old_path, const char * new_path) {
  * 0 on success, negative number on failure.
  */
 short sys_fsys_set_cwd(const char * path) {
-    t_syscall_params params = {.func = KFN_SET_CWD, .arg1 = path};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path};
+    return syscall(KFN_SET_CWD, &params);
 }
 
 /**
@@ -570,8 +570,8 @@ short sys_fsys_set_cwd(const char * path) {
  * 0 on success, negative number on failure.
  */
 short sys_fsys_get_cwd(char * path, short size) {
-    t_syscall_params params = {.func = KFN_GET_CWD, .arg1 = path, .arg2 = size};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path, .arg2 = size};
+    return syscall(KFN_GET_CWD, &params);
 }
 
 /*
@@ -591,8 +591,8 @@ short sys_fsys_get_cwd(char * path, short size) {
  * 0 on success, negative number on error
  */
 short sys_fsys_load(const char * path, long destination, long * start) {
-    t_syscall_params params = {.func = KFN_LOAD, .arg1 = path, .arg2 = destination, .arg3 = start};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = path, .arg2 = destination, .arg3 = start};
+    return syscall(KFN_LOAD, &params);
 }
 
 /*
@@ -609,8 +609,8 @@ short sys_fsys_load(const char * path, long destination, long * start) {
  * 0 on success, negative number on error
  */
 short sys_fsys_register_loader(const char * extension, p_file_loader loader) {
-    t_syscall_params params = {.func = KFN_LOAD_REGISTER, .arg1 = extension, .arg2 = loader};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = extension, .arg2 = loader};
+    return syscall(KFN_LOAD_REGISTER, &params);
 }
 
 /*
@@ -628,8 +628,8 @@ short sys_fsys_register_loader(const char * extension, p_file_loader loader) {
  * the number of jiffies since the last reset
  */
 long sys_time_jiffies() {
-    t_syscall_params params = {.func = KFN_TIME_JIFFIES};
-    return syscall(params);
+    t_syscall_params params = {0};
+    return syscall(KFN_TIME_JIFFIES, &params);
 }
 
 /*
@@ -639,8 +639,8 @@ long sys_time_jiffies() {
  * time = pointer to a t_time record containing the correct time
  */
 void sys_rtc_set_time(p_time time) {
-    t_syscall_params params = {.func = KFN_TIME_SETRTC, .arg1 = time};
-    syscall(params);
+    t_syscall_params params = {.arg1 = time};
+    syscall(KFN_TIME_SETRTC, &params);
 }
 
 /*
@@ -650,24 +650,24 @@ void sys_rtc_set_time(p_time time) {
  * time = pointer to a t_time record in which to put the current time
  */
 void sys_rtc_get_time(p_time time) {
-    t_syscall_params params = {.func = KFN_TIME_GETRTC, .arg1 = time};
-    syscall(params);
+    t_syscall_params params = {.arg1 = time};
+    syscall(KFN_TIME_GETRTC, &params);
 }
 
 /*
  * Return the next scan code from the keyboard... 0 if nothing pending
  */
 unsigned short sys_kbd_scancode() {
-    t_syscall_params params = {.func = KFN_KBD_SCANCODE};
-    return syscall(params);
+    t_syscall_params params = {0};
+    return syscall(KFN_KBD_SCANCODE, &params);
 }
 
 /*
  * Return an error message given an error number
  */
 const char * sys_err_message(short err_number) {
-    t_syscall_params params = {.func = KFN_ERR_MESSAGE, .arg1 = err_number};
-    return (const char *) syscall(params);
+    t_syscall_params params = {.arg1 = err_number};
+    return (const char *) syscall(KFN_ERR_MESSAGE, &params);
 }
 
 /*
@@ -692,6 +692,6 @@ const char * sys_err_message(short err_number) {
  * tables = pointer to the keyboard translation tables
  */
 short sys_kbd_layout(const char * tables) {
-    t_syscall_params params = {.func = KFN_KBD_LAYOUT, .arg1 = tables};
-    return syscall(params);
+    t_syscall_params params = {.arg1 = tables};
+    return syscall(KFN_KBD_LAYOUT, &params);
 }

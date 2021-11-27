@@ -242,13 +242,12 @@ typedef struct s_sys_info {
 } t_sys_info, *p_sys_info;
 
 typedef struct {
-    int32_t func;
     int32_t arg1;
     int32_t arg2;
     int32_t arg3;
     int32_t arg4;
     int32_t arg5;
     int32_t arg6;
-} t_syscall_params;
+} t_syscall_params, *p_syscall_params;
 
 #endif
