@@ -1,6 +1,8 @@
 #include <mcp/syscalls.h>
+#include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
+#include <fcntl.h>
 #include "constants.h"
 
 #define	FA_READ             0x01
@@ -10,41 +12,22 @@
 #define	FA_CREATE_ALWAYS    0x08
 #define	FA_OPEN_ALWAYS      0x10
 #define	FA_OPEN_APPEND      0x30
-#define MODE_MAP_CNT        8
 
-typedef struct {
-    char posix[4];
-    int fsys;
-} mode_map_t;
-
-// Mapping copied from http://elm-chan.org/fsw/ff/doc/open.html
-static mode_map_t mapping[MODE_MAP_CNT] = {
-    {"r",   FA_READ},
-    {"r+",  FA_READ | FA_WRITE},
-    {"w",   FA_CREATE_ALWAYS | FA_WRITE},
-    {"w+",  FA_CREATE_ALWAYS | FA_WRITE | FA_READ},
-    {"a",   FA_OPEN_APPEND | FA_WRITE},
-    {"a+",  FA_OPEN_APPEND | FA_WRITE | FA_READ},
-    {"wx",  FA_CREATE_NEW | FA_WRITE},
-    {"w+x", FA_CREATE_NEW | FA_WRITE | FA_READ}
-};
-
-// TODO: int _Stub_open(const char *path, int oflag, ...);
-int __open(const char *name,const char *mode) {
-    int result = -1;
-    int m = -1;
-
-    for (int i=0; i<MODE_MAP_CNT; i++) {
-        char *map = mapping[i].posix;
-        if (strcmp(mode, map) == 0) {
-            m = mapping[i].fsys;
-            break;
-        }
+static int oflag_to_fatfs(int oflag) {
+    int result = 0;
+    if (oflag & O_RDONLY) result |= FA_READ;
+    if (oflag & O_WRONLY) result |= FA_WRITE;
+    if (oflag & O_APPEND) result |= FA_OPEN_APPEND;    
+    if (oflag & O_CREAT & O_TRUNC) {
+        result |= FA_CREATE_ALWAYS;
+    } else if (oflag & O_CREAT) {
+        result |= FA_CREATE_NEW;
     }
+    return result;
+}
 
-    if (m >= 0) {
-        result = sys_fsys_open(name, m);
-    }
-
+int _Stub_open(const char *path, int oflag, ...) {
+    int m = oflag_to_fatfs(oflag);
+    int result = sys_fsys_open(path, m);
     return (result >= 0) ? result + FILE_TABLE_OFFSET : result;
 }
