@@ -1,0 +1,13 @@
+(define memories
+  '((memory flash (address (#x100000 . #x1fffff))
+            (section code idata cdata switch cdata data_init_table))
+    (memory NearRAM (address (#x200000 . #x20ffff))
+            (section znear))
+    (memory RAM (address (#x210000 . #x23ffff))
+            (section stack data zdata heap))
+    (memory Vector (address (#x0000 . #x03ff))
+            (section (reset #x0000)))
+    (block stack (size #x1000))
+    (block heap (size #x4000))
+    (base-address _NearBaseAddress NearRAM 0x8000)
+    ))
