@@ -9,5 +9,5 @@
             (section (reset #x0000)))
     (block stack (size #x1000))
     (block heap (size #x4000))
-    (base-address _NearBaseAddress NearRAM 0x8000)
+    (base-address _NearBaseAddress NearRAM #x8000)
     ))
