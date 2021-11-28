@@ -1,5 +1,5 @@
 ;;; Startup variant, change attribute value if you make your own
-              .rtmodel cstartup,"normal"
+              .rtmodel cstartup,"Foenix"
 
               .rtmodel version, "1"
 
