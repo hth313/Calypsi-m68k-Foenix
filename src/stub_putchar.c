@@ -1,4 +1,5 @@
 #include <mcp/syscalls.h>
+#include <stubs.h>
 #include "constants.h"
 
 int _Stub_putchar(int ch) {

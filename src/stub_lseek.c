@@ -1,5 +1,6 @@
 #include <mcp/syscalls.h>
 #include <stddef.h>
+#include <stubs.h>
 #include "constants.h"
 
 long _Stub_lseek(int h, long offset, int origin) {

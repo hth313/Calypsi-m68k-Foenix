@@ -1,8 +1,9 @@
 #include <mcp/syscalls.h>
 #include <stddef.h>
+#include <stubs.h>
 #include "constants.h"
 
-size_t _Stub_read(int h, char *p, size_t l) {
+size_t _Stub_read(int h, void *p, size_t l) {
     if (h == STDIN_FILENO) {
         return sys_chan_read(0, p, l);
     } else if (h > STDERR_FILENO) {
