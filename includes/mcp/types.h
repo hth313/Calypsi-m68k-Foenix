@@ -6,16 +6,7 @@
 #define __MCP_TYPES_H
 
 #include <stdint.h>
-
-/*
- * Function types
- */
-
-/*
- * Integer types in their standard sizes, signed and unsigned.
- */
-
-typedef unsigned char bool;
+#include <stdbool.h>
 
 //
 // A color (BGR)
