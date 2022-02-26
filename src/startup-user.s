@@ -1,11 +1,13 @@
-;;; Startup variant, change attribute value if you make your own
-              .rtmodel cstartup,"normal"
+;;; This startup is for loading into memory as a hex file using C256Mgr.
+;;; In this case we need to populate the reset vector and will start in
+;;; supervisor mode.
+
+              .rtmodel cstartup,"Foenix-user"
 
               .rtmodel version, "1"
+              .rtmodel cpu, "*"
 
               ;; External declarations
-              .section sstack
-              .section stack
               .section heap
               .section data_init_table
 
@@ -20,42 +22,21 @@
 
 ;;; ***************************************************************************
 ;;;
-;;; The reset vector. This uses the entry point label __program_root_section
-;;; which by default is what the linker will pull in first.
-;;;
-;;; ***************************************************************************
-
-              .section reset
-              .pubweak __program_root_section
-__program_root_section:
-              .long   .sectionEnd sstack + 1
-              .long   __program_start
-
-;;; ***************************************************************************
-;;;
 ;;; __program_start - actual start point of the program
 ;;;
-;;; Initialize sections and call main().
-;;; You can override this with your own routine, or tailor it as needed.
-;;; The easiest way to make custom initialization is to provide your own
-;;; __low_level_init which gets called after stacks have been initialized.
+;;; Initialize sections and call main(). Currently this startup does not
+;;; handle command line arguments from the mcp.
 ;;;
 ;;; ***************************************************************************
 
               .section libcode, noreorder
-              .pubweak __program_start
+              .pubweak __program_start, __program_root_section
               .align  2
+__program_root_section:
 __program_start:
-              move.l  #.sectionEnd stack + 1,a0
-              move.l  a0,usp
 #ifdef __CALYPSI_DATA_MODEL_SMALL__
               lea.l   _NearBaseAddress.l,a4
 #endif
-              call     __low_level_init
-              tst.l   d0            ; stay in supervisor?
-              bne.s   10$           ; yes
-              andi.w  #~0x2000,sr   ; no, drop out of supervisor
-10$:
 
 ;;; Initialize data sections if needed.
               .section libcode, noroot, noreorder
@@ -88,19 +69,3 @@ __call_heap_initialize:
               moveq.l #0,d0         ; argc = 0
               call    main
               jump    exit
-
-;;; ***************************************************************************
-;;;
-;;; __low_level_init - custom low level initialization
-;;;
-;;; This default routine just returns doing nothing. You can provide your own
-;;; routine, either in C or assembly for doing custom low leve initialization.
-;;;
-;;; ***************************************************************************
-
-              .section code
-              .pubweak __low_level_init
-              .align  2
-__low_level_init:
-              moveq.l #0,d0         ; switch to user mode
-              rts
