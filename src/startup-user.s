@@ -2,7 +2,7 @@
 ;;; In this case we need to populate the reset vector and will start in
 ;;; supervisor mode.
 
-              .rtmodel cstartup,"Foenix-user"
+              .rtmodel cstartup,"Foenix_user"
 
               .rtmodel version, "1"
               .rtmodel cpu, "*"
@@ -40,7 +40,7 @@ __program_start:
 
 ;;; Initialize data sections if needed.
               .section libcode, noroot, noreorder
-              .public __data_initialization_needed
+              .pubweak __data_initialization_needed
               .extern __initialize_sections
               .align  2
 __data_initialization_needed:
