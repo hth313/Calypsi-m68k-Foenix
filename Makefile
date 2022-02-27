@@ -6,7 +6,7 @@ C_FLAGS = -Iinclude
 ALL_LIBS = foenix-lc-sd.a
 
 # Common source files
-ASM_SRCS = startup-takeover.s startup-user.s syscall.s
+ASM_SRCS = startup-user.s syscall.s
 C_SRCS = stub_exit.c stub_open.c stub_puts.c stub_write.c stub_close.c stub_lseek.c stub_putchar.c stub_read.c \
          mcp_syscalls.c
 
