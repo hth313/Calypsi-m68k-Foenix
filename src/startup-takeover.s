@@ -1,7 +1,11 @@
-;;; Startup variant, change attribute value if you make your own
-              .rtmodel cstartup,"Foenix"
+;;; This startup is for loading into memory as a hex file using C256Mgr.
+;;; In this case we need to populate the reset vector and will start in
+;;; supervisor mode.
+
+              .rtmodel cstartup,"Foenix_takeover"
 
               .rtmodel version, "1"
+              .rtmodel cpu, "*"
 
               ;; External declarations
               .section sstack
@@ -59,7 +63,7 @@ __program_start:
 
 ;;; Initialize data sections if needed.
               .section libcode, noroot, noreorder
-              .public __data_initialization_needed
+              .pubweak __data_initialization_needed
               .extern __initialize_sections
               .align  2
 __data_initialization_needed:

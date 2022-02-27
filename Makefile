@@ -6,8 +6,9 @@ C_FLAGS = -Iincludes
 ALL_LIBS = foenix-lc-sd.a
 
 # Common source files
-ASM_SRCS = startup.s syscall.s 
-C_SRCS = stub_exit.c stub_open.c stub_puts.c stub_write.c stub_close.c stub_lseek.c stub_putchar.c stub_read.c mcp_syscalls.c
+ASM_SRCS = startup-takeover.s startup-user.s syscall.s 
+C_SRCS = stub_exit.c stub_open.c stub_puts.c stub_write.c stub_close.c stub_lseek.c stub_putchar.c stub_read.c \
+         mcp_syscalls.c
 
 # Object files
 OBJS = $(ASM_SRCS:%.s=%.o) $(C_SRCS:%.c=%.o)

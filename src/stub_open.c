@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <fcntl.h>
+#include <stubs.h>
 #include "constants.h"
 
 #define	FA_READ             0x01
