@@ -5,7 +5,7 @@
               .rtmodel cstartup,"Foenix_user"
 
               .rtmodel version, "1"
-              .rtmodel cpu, "*"
+              .rtmodel core, "*"
 
               ;; External declarations
               .section heap

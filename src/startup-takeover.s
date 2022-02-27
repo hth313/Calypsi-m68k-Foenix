@@ -5,7 +5,7 @@
               .rtmodel cstartup,"Foenix_takeover"
 
               .rtmodel version, "1"
-              .rtmodel cpu, "*"
+              .rtmodel core, "*"
 
               ;; External declarations
               .section sstack
