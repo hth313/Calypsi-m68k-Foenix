@@ -4,6 +4,6 @@
 #include "constants.h"
 
 int _Stub_puts(const char *str) {
-	sys_chan_write(CONSOLE, (unsigned char*)str, strlen(str));
-	return 0;
+  sys_chan_write(CONSOLE, (unsigned char*)str, strlen(str));
+  return 0;
 }
