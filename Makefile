@@ -1,6 +1,6 @@
 VPATH = src
 AS_FLAGS = --core=68000 --target=Foenix --code-model=large --data-model=small
-C_FLAGS = -Iincludes
+C_FLAGS = -Iinclude
 
 # Library products
 ALL_LIBS = foenix-lc-sd.a
