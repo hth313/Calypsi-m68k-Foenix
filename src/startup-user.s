@@ -18,6 +18,12 @@
               .extern _NearBaseAddress
 #endif
 
+#ifdef __CALYPSI_TARGET_SYSTEM_FOENIX__
+              .extern _Gavin
+# define GavinLow   0x000b0000
+# define GavinHigh  0xfec00000
+#endif
+
 #include "macros.h"
 
 ;;; ***************************************************************************
@@ -64,6 +70,23 @@ __call_heap_initialize:
               move.l  #__default_heap,a0
               move.l  #.sectionStart heap,a1
               call    __heap_initialize
+
+              .section libcode, noroot, noreorder
+#ifdef __CALYPSI_TARGET_SYSTEM_FOENIX__
+              .pubweak _Gavin_initialize
+_Gavin_initialize:
+              move.l  #GavinLow,a0  ; assume A2560U system
+              cmp.w   #0x4567,0x0010(a0) ; check byte order
+              beq.s   20$
+              move.l  #GavinHigh,a0 ; no, assume A2560K 32-bit
+20$:
+              ;; keep base pointer to Gavin
+#ifdef __CALYPSI_DATA_MODEL_SMALL__
+              move.l  a0,(.near _Gavin,A4)
+#else
+              move.l  a0,_Gavin
+#endif // __CALYPSI_DATA_MODEL_SMALL__
+#endif // __CALYPSI_TARGET_SYSTEM_FOENIX__
 
               .section libcode, root, noreorder
               moveq.l #0,d0         ; argc = 0
