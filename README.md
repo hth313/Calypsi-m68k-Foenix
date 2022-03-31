@@ -1,5 +1,5 @@
 Calypsi board support for A2560 Foenix
-=====================================
+======================================
 
 This project contains a library and linker control files to make
 it easy to get started on using the Calypsi C compiler for the
@@ -11,7 +11,7 @@ Usage
 This module is currently intended to be included as a Git submodule
 in your own project. You can see examples of this in existing projects
 such as
-[Hello World for C256U](https://github.com/hth313/Calypsi-m68k-hello-world)
+[Hello World for m68k](https://github.com/hth313/Calypsi-m68k-hello-world)
 where this project is included under the `module` folder.
 
 To attach this project to you project while standing in the root folder
