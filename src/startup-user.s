@@ -20,7 +20,7 @@
 
 #ifdef __CALYPSI_TARGET_SYSTEM_FOENIX__
               .extern _Gavin
-# define GavinLow   0x000b0000
+# define GavinLow   0x00b00000
 # define GavinHigh  0xfec00000
 #endif
 
