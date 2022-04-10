@@ -9,6 +9,7 @@
 
               ;; External declarations
               .section heap
+              .section stack
               .section data_init_table
 
               .extern __initialize_data, __initialize_udata
@@ -40,6 +41,7 @@
               .align  2
 __program_root_section:
 __program_start:
+              move.l  #.sectionEnd stack + 1,sp
 #ifdef __CALYPSI_DATA_MODEL_SMALL__
               lea.l   _NearBaseAddress.l,a4
 #endif
