@@ -14,8 +14,7 @@ STUB_SRCS = stub_exit.c stub_open.c stub_puts.c stub_write.c stub_close.c stub_l
 OBJS = $(ASM_SRCS:%.s=%.o) $(C_SRCS:%.c=%.o)
 
 # Add --rtattr to stub files
-$(STUB_SRCS:%.c=%.o) : CFLAGS += --rtattr stubs=foenix
-$(STUB_SRCS:%.c=%.o) : CFLAGS += --rtattr stubs=foenix
+$(STUB_SRCS:%.c=%.o) : CFLAGS += --rtattr stubs=foenix --weak-symbols
 
 %.o: %.s
 	as68k $(AFLAGS) --list-file=$(@:%.o=obj/%.lst) -o obj/$@ $<
