@@ -31,8 +31,7 @@
 ;;;
 ;;; __program_start - actual start point of the program
 ;;;
-;;; Initialize sections and call main(). Currently this startup does not
-;;; handle command line arguments from the mcp.
+;;; Initialize sections and call main(). 
 ;;;
 ;;; ***************************************************************************
 
@@ -92,5 +91,7 @@ _Gavin_initialize:
 
               .section libcode, root, noreorder
               moveq.l #0,d0         ; argc = 0
+              move.w  (a7)+,d0      ; pop argc to d0
+              move.l  (a7)+,a0      ; pop argv to a0
               call    main
               jump    exit
