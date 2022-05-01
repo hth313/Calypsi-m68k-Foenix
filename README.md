@@ -2,8 +2,8 @@ Calypsi board support for A2560 Foenix
 ======================================
 
 This project contains a library and linker control files to make
-it easy to get started on using the Calypsi C compiler for the
-A2560 Foenix.
+it easy to get started on using the
+[Calypsi C compiler](https://www.calypsi.cc/) for the A2560 Foenix.
 
 Usage
 -----
