@@ -298,10 +298,10 @@ short sys_chan_close(short chan) {
  * Returns:
  *  0 on success, any other on error
  */
-short sys_chan_swap(short channel1, short channel2) (
+short sys_chan_swap(short channel1, short channel2) {
     t_syscall_params params = {.arg1 = channel1, .arg2 = channel2};
     return syscall(KFN_CHAN_SWAP, &params);
-)
+}
 
 /* Get the device ID of the device on  a channel
  *
