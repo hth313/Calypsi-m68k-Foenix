@@ -712,7 +712,7 @@ unsigned long sys_mem_reserve( unsigned long size ) {
  */
 void sys_proc_elevate() {
     t_syscall_params params = {0};
-    return syscall(KFN_PROC_ELEVATE, &params);   
+    syscall(KFN_PROC_ELEVATE, &params);   
 }
 
 /*
@@ -742,7 +742,7 @@ extern short sys_var_set( const char *name, const char *value ) {
  */
 const char *sys_var_get( const char *name ) {
     t_syscall_params params = {.arg1 = (uint32_t)name};
-    return syscall(KFN_VAR_GET, &params);    
+    return (const char *)syscall(KFN_VAR_GET, &params);    
 }
 
 /*
