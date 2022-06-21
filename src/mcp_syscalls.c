@@ -726,7 +726,7 @@ void sys_proc_elevate() {
  *  0 on success, any other number on error
  */
 extern short sys_var_set( const char *name, const char *value ) {
-    t_syscall_params params = {.arg1 = (uint32_t)name, .arg2= (uint_32t)value};
+    t_syscall_params params = {.arg1 = (uint32_t)name, .arg2= (uint32_t)value};
     return syscall(KFN_VAR_SET, &params);      
 }
 
