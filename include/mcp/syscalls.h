@@ -45,6 +45,8 @@
 #define KFN_CHAN_REGISTER       0x19    /* Register a channel device driver */
 #define KFN_CHAN_OPEN           0x1A    /* Open a channel device */
 #define KFN_CHAN_CLOSE          0x1B    /* Close an open channel (not for files) */
+#define KFN_CHAN_SWAP           0x1C    /* Swap two channels */
+#define KFN_CHAN_DEVICE         0x1D    /* Return the Device ID of a channel */
 #define KFN_TEXT_SETSIZES       0x1C    /* Adjusts the screen size based on the current graphics mode */
 
 
@@ -76,11 +78,17 @@
 #define KFN_GET_CWD             0x3E    /* Get the current working directory */
 #define KFN_LOAD_REGISTER       0x3F    /* Register a file type handler for executable binaries */
 
-/* Process and memory calls */
+/* System: Process and memory calls */
 
-#define KFN_RUN                 0x40    /* Load an execute a binary file */
+#define KFN_PROC_RUN            0x40    /* Load and execute a binary file */
+#define KFN_MEM_GET_RAMTOP      0x41    /* Return limit of accessible RAM */
+#define KFN_MEM_RESERVE         0x42    /* Reserve a block of memory from top of system RAM */
+#define KFN_PROC_ELEVATE        0x43    /* Raise privilege of current program to highest level */
+#define KFN_VAR_SET             0x44    /* Set value of a system variable */
+#define KFN_VAR_GET             0x45    /* Return the value of a system variable */
 
-/* Misc calls */
+
+/* System: Misc calls */
 
 #define KFN_TIME_JIFFIES        0x50    /* Gets the current time code (increments since boot) */
 #define KFN_TIME_SETRTC         0x51    /* Set the real time clock date-time */
@@ -111,6 +119,34 @@ extern int32_t syscall(int32_t function, p_syscall_params params);
 extern void sys_exit(short result);
 
 /*
+ * Register a handler for a given interrupt.
+ *
+ * Inputs:
+ * n = the number of the interrupt
+ * handler = pointer to the interrupt handler to register
+ *
+ * Returns:
+ * the pointer to the previous interrupt handler
+ */
+extern p_int_handler sys_int_register(unsigned short n, p_int_handler handler);
+
+/*
+ * Enable an interrupt
+ *
+ * Inputs:
+ * n = the number of the interrupt
+ */
+extern void sys_int_enable(unsigned short n);
+
+/*
+ * Disable an interrupt by masking it
+ *
+ * Inputs:
+ * n = the number of the interrupt: n[7..4] = group number, n[3..0] = individual number.
+ */
+extern void sys_int_disable(unsigned short n);
+
+/*
  * Enable all interrupts
  *
  * NOTE: this is actually provided in the low level assembly
@@ -125,32 +161,12 @@ extern void sys_int_enable_all();
 extern void sys_int_disable_all();
 
 /*
- * Disable an interrupt by masking it
+ * Acknowledge an interrupt (clear out its pending flag)
  *
  * Inputs:
  * n = the number of the interrupt: n[7..4] = group number, n[3..0] = individual number.
  */
-extern void sys_int_disable(unsigned short n);
-
-/*
- * Enable an interrupt
- *
- * Inputs:
- * n = the number of the interrupt
- */
-extern void sys_int_enable(unsigned short n);
-
-/*
- * Register a handler for a given interrupt.
- *
- * Inputs:
- * n = the number of the interrupt
- * handler = pointer to the interrupt handler to register
- *
- * Returns:
- * the pointer to the previous interrupt handler
- */
-extern p_int_handler sys_int_register(unsigned short n, p_int_handler handler);
+extern void sys_int_clear(unsigned short n);
 
 /*
  * Return true (non-zero) if an interrupt is pending for the given interrupt
@@ -171,28 +187,9 @@ extern short sys_int_pending(unsigned short n);
  */
 extern void sys_get_info(p_sys_info info);
 
-/*
- * Acknowledge an interrupt (clear out its pending flag)
- *
- * Inputs:
- * n = the number of the interrupt: n[7..4] = group number, n[3..0] = individual number.
- */
-extern void sys_int_clear(unsigned short n);
-
 /***
  *** Channel system calls
  ***/
-
-/*
- * Read a single byte from the channel
- *
- * Inputs:
- *  channel = the number of the channel
- *
- * Returns:
- *  the value read (if negative, error)
- */
-extern short sys_chan_read_b(short channel);
 
 /*
  * Read bytes from the channel
@@ -208,6 +205,17 @@ extern short sys_chan_read_b(short channel);
 extern short sys_chan_read(short channel, unsigned char * buffer, short size);
 
 /*
+ * Read a single byte from the channel
+ *
+ * Inputs:
+ *  channel = the number of the channel
+ *
+ * Returns:
+ *  the value read (if negative, error)
+ */
+extern short sys_chan_read_b(short channel);
+
+/*
  * Read a line of text from the channel
  *
  * Inputs:
@@ -219,18 +227,6 @@ extern short sys_chan_read(short channel, unsigned char * buffer, short size);
  *  number of bytes read, any negative number is an error code
  */
 extern short sys_chan_readline(short channel, unsigned char * buffer, short size);
-
-/*
- * Write a single byte to the device
- *
- * Inputs:
- *  channel = the number of the channel
- *  b = the byte to write
- *
- * Returns:
- *  0 on success, a negative value on error
- */
-extern short sys_chan_write_b(short channel, unsigned char b);
 
 /*
  * Write a byte to the channel
@@ -245,15 +241,16 @@ extern short sys_chan_write_b(short channel, unsigned char b);
 extern short sys_chan_write(short channel, unsigned char * buffer, short size);
 
 /*
- * Return the status of the channel device
+ * Write a single byte to the device
  *
  * Inputs:
  *  channel = the number of the channel
+ *  b = the byte to write
  *
  * Returns:
- *  the status of the device
+ *  0 on success, a negative value on error
  */
-extern short sys_chan_status(short channel);
+extern short sys_chan_write_b(short channel, unsigned char b);
 
 /*
  * Ensure that any pending writes to teh device have been completed
@@ -280,6 +277,17 @@ extern short sys_chan_flush(short channel);
 extern short sys_chan_seek(short channel, long position, short base);
 
 /*
+ * Return the status of the channel device
+ *
+ * Inputs:
+ *  channel = the number of the channel
+ *
+ * Returns:
+ *  the status of the device
+ */
+extern short sys_chan_status(short channel);
+
+/*
  * Issue a control command to the device
  *
  * Inputs:
@@ -292,6 +300,17 @@ extern short sys_chan_seek(short channel, long position, short base);
  *  0 on success, any negative number is an error code
  */
 extern short sys_chan_ioctrl(short channel, short command, uint8_t * buffer, short size);
+
+/*
+ * Register a channel device driver <>
+ * 
+ * Inputs:
+ *  device = pointer to the device, including handler functions
+ *
+ * Returns:
+ *  <>
+ */
+extern short sys_chan_register(struct s_dev_chan *device);
 
 /*
  * Open a channel
@@ -317,14 +336,29 @@ extern short sys_chan_open(short dev, uint8_t * path, short mode);
  */
 extern short sys_chan_close(short chan);
 
+/* Swap two channels (given their IDS)
+ *
+ * Inputs:
+ *  channel1, channel2 = channel IDs to be swapped
+ *
+ * Returns:
+ *  0 on success, any other on error
+ */
+extern short sys_chan_swap(short channel1, short channel2);
+
+/* Get the device ID of the device on  a channel
+ *
+ * Inputs:
+ *  channel = channel of the device
+ *
+ * Returns:
+ *  device ID of the device on the channel
+ */
+extern short sys_chan_device(short channel);
+
 /***
  *** Block device system calls
  ***/
-
-//
-// Register a block device driver
-//
-extern short sys_bdev_register(p_dev_block device);
 
 //
 // Read a block from the device
@@ -338,7 +372,7 @@ extern short sys_bdev_register(p_dev_block device);
 // Returns:
 //  number of bytes read, any negative number is an error code
 //
-extern short sys_bdev_read(short dev, long lba, unsigned char * buffer, short size);
+extern short sys_bdev_getblock(short dev, long lba, unsigned char * buffer, short size);
 
 //
 // Write a block from the device
@@ -352,18 +386,7 @@ extern short sys_bdev_read(short dev, long lba, unsigned char * buffer, short si
 // Returns:
 //  number of bytes written, any negative number is an error code
 //
-extern short sys_bdev_write(short dev, long lba, const unsigned char * buffer, short size);
-
-//
-// Return the status of the block device
-//
-// Inputs:
-//  dev = the number of the device
-//
-// Returns:
-//  the status of the device
-//
-extern short sys_bdev_status(short dev);
+extern short sys_bdev_putblock(short dev, long lba, const unsigned char * buffer, short size);
 
 //
 // Ensure that any pending writes to teh device have been completed
@@ -375,6 +398,17 @@ extern short sys_bdev_status(short dev);
 //  0 on success, any negative number is an error code
 //
 extern short sys_bdev_flush(short dev);
+
+//
+// Return the status of the block device
+//
+// Inputs:
+//  dev = the number of the device
+//
+// Returns:
+//  the status of the device
+//
+extern short sys_bdev_status(short dev);
 
 //
 // Issue a control command to the device
@@ -389,6 +423,11 @@ extern short sys_bdev_flush(short dev);
 //  0 on success, any negative number is an error code
 //
 extern short sys_bdev_ioctrl(short dev, short command, unsigned char * buffer, short size);
+
+//
+// Register a block device driver
+//
+extern short sys_bdev_register(p_dev_block device);
 
 
 /*
@@ -406,28 +445,6 @@ extern short sys_bdev_ioctrl(short dev, short command, unsigned char * buffer, s
  * the channel ID for the open file (negative if error)
  */
 extern short sys_fsys_open(const char * path, short mode);
-
-/**
- * Close access to a previously open file.
- *
- * Inputs:
- * fd = the channel ID for the file
- *
- * Returns:
- * 0 on success, negative number on failure
- */
-extern short sys_fsys_close(short fd);
-
-/**
- * Attempt to open a directory for scanning
- *
- * Inputs:
- * path = the path to the directory to open
- *
- * Returns:
- * the handle to the directory if >= 0. An error if < 0
- */
-extern short sys_fsys_opendir(const char * path);
 
 /**
  * Close access to a previously open file.
@@ -499,35 +516,6 @@ extern short sys_fsys_findfirst(const char * path, const char * pattern, p_file_
  */
 extern short sys_fsys_findnext(short dir, p_file_info file);
 
-/*
- * Get the label for the drive holding the path
- *
- * Inputs:
- * path = path to the drive
- * label = buffer that will hold the label... should be at least 35 bytes
- */
-extern short sys_fsys_get_label(const char * path, char * label);
-
-/*
- * Set the label for the drive holding the path
- *
- * Inputs:
- * drive = drive number
- * label = buffer that holds the label
- */
-extern short sys_fsys_set_label(short drive, const char * label);
-
-/**
- * Create a directory
- *
- * Inputs:
- * path = the path of the directory to create.
- *
- * Returns:
- * 0 on success, negative number on failure.
- */
-extern short sys_fsys_mkdir(const char * path);
-
 /**
  * Delete a file or directory
  *
@@ -550,6 +538,53 @@ extern short sys_fsys_delete(const char * path);
  * 0 on success, negative number on failure.
  */
 extern short sys_fsys_rename(const char * old_path, const char * new_path);
+
+/**
+ * Create a directory
+ *
+ * Inputs:
+ * path = the path of the directory to create.
+ *
+ * Returns:
+ * 0 on success, negative number on failure.
+ */
+extern short sys_fsys_mkdir(const char * path);
+
+/*
+ * Load a file into memory at the designated destination address.
+ *
+ * If destination = 0, the file must be in a recognized binary format
+ * that specifies its own loading address.
+ *
+ * Inputs:
+ * path = the path to the file to load
+ * destination = the destination address (0 for use file's address)
+ * start = pointer to the long variable to fill with the starting address
+ *         (0 if not an executable, any other number if file is executable
+ *         with a known starting address)
+ *
+ * Returns:
+ * 0 on success, negative number on error
+ */
+extern short sys_fsys_load(const char * path, long destination, long * start);
+
+/*
+ * Get the label for the drive holding the path
+ *
+ * Inputs:
+ * path = path to the drive
+ * label = buffer that will hold the label... should be at least 35 bytes
+ */
+extern short sys_fsys_get_label(const char * path, char * label);
+
+/*
+ * Set the label for the drive holding the path
+ *
+ * Inputs:
+ * drive = drive number
+ * label = buffer that holds the label
+ */
+extern short sys_fsys_set_label(short drive, const char * label);
 
 /**
  * Change the current working directory (and drive)
@@ -575,24 +610,6 @@ extern short sys_fsys_setcwd(const char * path);
 extern short sys_fsys_getcwd(char * path, short size);
 
 /*
- * Load a file into memory at the designated destination address.
- *
- * If destination = 0, the file must be in a recognized binary format
- * that specifies its own loading address.
- *
- * Inputs:
- * path = the path to the file to load
- * destination = the destination address (0 for use file's address)
- * start = pointer to the long variable to fill with the starting address
- *         (0 if not an executable, any other number if file is executable
- *         with a known starting address)
- *
- * Returns:
- * 0 on success, negative number on error
- */
-extern short sys_fsys_load(const char * path, long destination, long * start);
-
-/*
  * Register a file loading routine
  *
  * A file loader, takes a channel number to load from and returns a
@@ -606,6 +623,80 @@ extern short sys_fsys_load(const char * path, long destination, long * start);
  * 0 on success, negative number on error
  */
 extern short sys_fsys_register_loader(const char * extension, p_file_loader loader);
+
+/* 
+ * Process and memory calls
+ */
+
+/*
+ * Load and run an executable binary file
+ *
+ * Inputs:
+ *  path = pointer to path to the file to run
+ *  argc = number of arguments to pass to the executable
+ *  argv = array of strings containing the parameters
+ *
+ * Returns:
+ *  Any value is an error (don't expect any return on susses)
+ */
+extern short sys_proc_run( const char *path, int argc, char *argv[]);
+
+/*
+ * Get the upper limit of accessible RAM
+ *
+ * Inputs:
+ *  none
+ *
+ * Returns:
+ *  Address of first byte of RAM block
+ */
+extern unsigned long sys_mem_get_ramtop();
+
+/*
+ * Reserve a block of memory from top of system RAM
+ *
+ * Inputs:
+ *  size = number of bytes to reserve
+ *
+ * Returns:
+ *  Address of first byte of non-accessible RAM area
+ */
+extern unsigned long sys_mem_reserve( unsigned long size );
+
+/*
+ * Raise the privilege level of this program/process to the highest level
+ *
+ * Inputs:
+ *  none (single tasking operating system)
+ *
+ * Returns:
+ *  none
+ */
+extern void sys_proc_elevate();
+
+/*
+ * Set the value of a system variable
+ *
+ * Inputs:
+ *  name = name of the system variable (pointer to string)
+ *  value = value of the system variable (pointer to string)
+ *
+ * Returns:
+ *  0 on success, any other number on error
+ */
+extern short sys_var_set( const char *name, const char *value );
+
+/*
+ * Get the value of a system variable
+ *
+ * Inputs:
+ *  name = name of the system variable (pointer to string)
+ *
+ * Returns:
+ *  pointer to string as value of the system variable
+ *  0 if name of variable was not found
+ */
+extern const char *sys_var_get( const char *name );
 
 /*
  * Miscellaneous
@@ -629,7 +720,7 @@ extern long sys_time_jiffies();
  * Inputs:
  * time = pointer to a t_time record containing the correct time
  */
-extern void sys_rtc_set_time(p_time time);
+extern void sys_time_setrtc(p_time time);
 
 /*
  * Get the time on the RTC
@@ -637,17 +728,12 @@ extern void sys_rtc_set_time(p_time time);
  * Inputs:
  * time = pointer to a t_time record in which to put the current time
  */
-extern void sys_rtc_get_time(p_time time);
+extern void sys_time_getrtc(p_time time);
 
 /*
  * Return the next scan code from the keyboard... 0 if nothing pending
  */
 extern unsigned short sys_kbd_scancode();
-
-/*
- * Return an error message given an error number
- */
-extern const char * sys_err_message(short err_number);
 
 /*
  * Set the keyboard translation tables
@@ -670,6 +756,12 @@ extern const char * sys_err_message(short err_number);
  * Inputs:
  * tables = pointer to the keyboard translation tables
  */
-extern short sys_kbd_layout(const char * tables);
+extern short sys_kbd_setlayout(const char * tables);
+
+/*
+ * Return an error message given an error number
+ */
+extern const char * sys_err_message(short err_number);
+
 
 #endif
