@@ -943,7 +943,7 @@ void sys_txt_set_border_color( short screen, uint8_t red,
 
 /*
  * Set the font to be used in text mode for the screen
- *
+ * 
  * Inputs:
  *  screen = screenID of the screen
  *  width = width of the characters in pixels

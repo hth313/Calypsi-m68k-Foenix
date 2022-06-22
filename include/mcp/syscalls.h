@@ -772,7 +772,7 @@ extern unsigned short sys_kbd_scancode();
  * - ALT: Used when only ALT is presse
  * - ALT-SHIFT: Used when ALT is pressed and either CAPSLOCK is down
  *   or SHIFT is pressed (but not both)
- *
+ * 
  * Inputs:
  * tables = pointer to the keyboard translation tables
  */
