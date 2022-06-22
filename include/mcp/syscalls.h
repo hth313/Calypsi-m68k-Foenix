@@ -872,8 +872,8 @@ void sys_txt_set_border( short screen, short width, short height );
  * Returns:
  *  nothing
  */
-void sys_txt_set_border_color( short screen, unsigned byte red,
-                                unsigned byte green, unsigned byte blue );
+void sys_txt_set_border_color( short screen, uint8_t red,
+                                uint8_t green, uint8_t blue );
 
 /*
  * Set the font to be used in text mode for the screen
@@ -887,8 +887,8 @@ void sys_txt_set_border_color( short screen, unsigned byte red,
  * Returns:
  *  0 on success, any other number means error (invalid screen, invalid font size)
  */
-short sys_txt_set_font( short screen, short width, short heigth, 
-                                unisgend char *data );
+short sys_txt_set_font( short screen, short width, short height, 
+                                unsigned char *data );
 
 /*
  * Set the appearance of the text mode cursor
