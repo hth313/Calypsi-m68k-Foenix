@@ -827,3 +827,285 @@ const char * sys_err_message(short err_number) {
     t_syscall_params params = {.arg1 = err_number};
     return (const char *) syscall(KFN_ERR_MESSAGE, &params);
 }
+
+/**
+ * Text Display calls
+ /**
+
+/*
+ * Reset a screen to its default text mode
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *
+ * Returns:
+ *  nothing
+ */
+extern void sys_txt_init_screen( short screen ) {
+    t_syscall_params params = {.arg1 = screen};
+    syscall(KFN_TXT_INIT_SCREEN, &params);    
+}
+
+/*
+ * Return a description of a screen's capabilities
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *
+ * Returns:
+ *  pointer to txt_capabilities structure (p_txt_capabilities)
+ */
+const p_txt_capabilities sys_txt_get_caps( short screen ) {
+    t_syscall_params params = {.arg1 = screen};
+    return (p_txt_capabilities) syscall(KFN_TXT_GET_CAPS, &params);    
+}
+
+/*
+ * Set the display mode of a screen
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  mode = desired mode (one from TXT_MODE_TEXT, TXT_MODE_BITMAP, TXT_MODE_TILE, 
+ *                          TXT_MODE_SPRITE, TXT_MODE_SLEEP)
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_mode( short screen, short mode ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = mode};
+    return syscall(KFN_TXT_SET_MODE, &params);    
+}
+
+/*
+ * Set text screen device driver to current screen geometry (resolution, border size)
+ *
+ * Inputs:
+ *  none
+ *
+ * Returns:
+ *  0 on succcess or any other number on error
+ */
+void sys_txt_setsizes() {
+    t_syscall_params params = {0};
+    syscall(KFN_TXT_SETSIZES, &params);       
+}
+
+/*
+ * Set the base display resolution of the screen
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  horizontal = number of horizontal pixels
+ *  vertical = number of verticl pixels
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_resolution( short screen, short horizontal, short vertical ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = horizontal, .arg3 = vertical};
+    return syscall(KFN_TXT_SET_RESOLUTION, &params);   
+}
+
+/*
+ * Set the size of the border (around the screen)
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  width = border width left and right of the screen in pixels
+ *  height = border height top and bottom of the screen in pixels
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_set_border( short screen, short width, short height ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = width, .arg3 = height};
+    syscall(KFN_TXT_SET_BORDER, &params);   
+}
+
+/*
+ * Set the color of the border (around the screen) with RGB components
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  red = red component of color (0-255)
+ *  green = green component of color (0-255)
+ *  blue = blue component of border (0-255)
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_set_border_color( short screen, unsigned byte red,
+                                unsigned byte green, unsigned byte blue ) {
+    t_syscall_params params = {.arg1 = screen,
+                                .arg2 = red, .arg3 = green, .arg4 = blue};
+    syscall(KFN_TXT_SET_BORDER_COLOR, &params);   
+}
+
+/*
+ * Set the font to be used in text mode for the screen
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  width = width of the characters in pixels
+ *  height = height of the characters in pixels
+ *  data = pointer to font data
+ *
+ * Returns:
+ *  0 on success, any other number means error (invalid screen, invalid font size)
+ */
+short sys_txt_set_font( short screen, short width, short heigth, 
+                                unisgend char *data ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = width, .arg3 = height,
+                                .arg4 = (uint32_t)data};
+    return syscall(KFN_TXT_SET_FONT, &params);   
+}
+
+/*
+ * Set the appearance of the text mode cursor
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  enable = hide(0) or show (any other number) cursor
+ *  rate = blink rate of the cursor (in Hz, see MCP manual for ranges)
+ *  character = ASCII code of the glyph from the screen's font as the cursor
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_cursor( short screen, short enable, short rate, char character ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = enable,
+                                .arg3 = rate, .arg4 = character};
+    return syscall(KFN_TXT_SET_CURSOR, &params);   
+}
+
+/*
+ * Set the rectangular region of the screen that will be used for printing,
+ * scrolling and filling.
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  region = pointer to t_rect structure (upper left corner, width, height)
+ *              coordinates in character cells. (0,0) is upper-left,
+ *              size 0 means fullscreen
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_region( short screen, p_rect region ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = (uint32_t)region};
+    return syscall(KFN_TXT_SET_REGION, &params);   
+}
+
+/*
+ * Set the foreground and background color for subsequent printing to the screen
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  foreground = color index for foreground color (0-15)
+ *  background = color index for background color (0-15)
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_color( short screen, short foreground, short background ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = foreground, .arg3 = background};
+    return syscall(KFN_TXT_SET_COLOR, &params);   
+}
+
+/*
+ * Get the current foreground and background color
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  foreground = pointer to retrieve color index for foreground color (0-15)
+ *  background = pointer to retrieve color index for background color (0-15)
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+ short sys_txt_get_color( short screen, short *foreground, short *background ) {
+    t_syscall_params params = {.arg1 = screen,
+                                .arg2 = (uint32_t)foreground,
+                                .arg3 = (uint32_t)background};
+    return syscall(KFN_TXT_GET_COLOR, &params);   
+ }
+
+ /*
+ * Set cursor position on the screen, relative to origin of current region
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  x = relative x position (in character positions)
+ *  y = relative y position (in character positions)
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_set_xy( short screen, short x, short y ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = x, .arg3 = y};
+    syscall(KFN_TXT_SET_XY, &params);   
+}
+
+/*
+ * Get cursor position on the screen, relative to origin of current region
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  position = pointer to x,y structure to retrive position
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_get_xy( short screen, p_point position ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = (uint32_t)position};
+    syscall(KFN_TXT_GET_XY, &params);   
+}
+
+/*
+ * Scroll the text in the current region
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  horizontal = number of horizontal pixels to scroll
+ *  vertical = number of verticl pixels to scroll
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_scroll( short screen, short horizontal, short vertical ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = horizontal,
+                                .arg3 = vertical};
+    syscall(KFN_TXT_SCROLL, &params);   
+}
+
+/*
+ * Set visibility of the cursor
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  is_visible = hidden (FALSE or 0) or visible (any other number)
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_set_cursor_vis( short screen, short is_visible ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = is_visible};
+    syscall(KFN_TXT_SET_CURSOR_VIS, &params);   
+}
+
+/*
+ * Get screensize in total pixels (so without taking the border into consideration)
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  text_size = pointer to t_extent structure to retrieve size in visible characters
+ *  pixel_size = pointer to t_extent structure to retrieve size in pixels
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_get_sizes( short screen, p_extent text_size, p_extent pixel_size ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = (uint32_t)text_size,
+                                (uint32_t)pixel_size};
+    syscall(KFN_TXT_GET_SIZES, &params);   
+}

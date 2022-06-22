@@ -87,7 +87,6 @@
 #define KFN_VAR_SET             0x44    /* Set value of a system variable */
 #define KFN_VAR_GET             0x45    /* Return the value of a system variable */
 
-
 /* System: Misc calls */
 
 #define KFN_TIME_JIFFIES        0x50    /* Gets the current time code (increments since boot) */
@@ -96,6 +95,27 @@
 #define KFN_KBD_SCANCODE        0x53    /* Get the next scan code from the keyboard */
 #define KFN_KBD_LAYOUT          0x54    /* Set the translation tables for the keyboard */
 #define KFN_ERR_MESSAGE         0x55    /* Return an error description, given an error number */
+
+/* Text Display calls */
+#define KFN_TXT_INIT_SCREEN     0x60    /* Reset a screen to its default text mode */
+#define KFN_TXT_GET_CAPS        0x61    /* Return a description of a screen's capabilities */
+#define KFN_TXT_SET_MODE        0x62    /* Set the display mode of a screen */
+#define KFN_TXT_SETSIZES        0x63    /* Calculate the size of the text matrix */
+#define KFN_TXT_SET_RESOLUTION  0x64    /* Set the base display resolution */
+#define KFN_TXT_SET_BORDER      0x65    /* Set the border size */
+#define KFN_TXT_SET_BORDER_COLOR    0x66    /* Set border color */
+#define KFN_TXT_SET_FONT        0x67    /* Set text mode font for the display */
+#define KFN_TXT_SET_CURSOR      0x68    /* Set cursor appearance for the display */
+#define KFN_TXT_SET_REGION      0x69    /* Set clipping/scrolling region for display */
+#define KFN_TXT_GET_REGION      0x6A    /* Get current clipping/scrolling region */
+#define KFN_TXT_SET_COLOR       0x6B    /* Set foreground and background colors for text */
+#define KFN_TXT_GET_COLOR       0x6C    /* Get current foreground and background colors */
+#define KFN_TXT_SET_XY          0x6D    /* Set cursor position within current region */
+#define KFN_TXT_GET_XY          0x6E    /* Get cursor position within current region */
+#define KFN_TXT_SCROLL          0x6F    /* Scroll current region */
+#define KFN_TXT_SET_CURSOR_VIS  0x71    /* Set cursor visibility */
+#define KFN_TXT_GET_SIZES       0x72    /* Gets screensize in pixels and characters */
+
 
 /*
  * Call into the kernel (provided by assembly)
@@ -762,6 +782,231 @@ extern short sys_kbd_setlayout(const char * tables);
  * Return an error message given an error number
  */
 extern const char * sys_err_message(short err_number);
+
+
+/**
+ * Text Display calls
+ /**
+
+/*
+ * Reset a screen to its default text mode
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *
+ * Returns:
+ *  nothing
+ */
+extern void sys_txt_init_screen( short screen );
+
+/*
+ * Return a description of a screen's capabilities
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *
+ * Returns:
+ *  pointer to txt_capabilities structure (p_txt_capabilities)
+ */
+const p_txt_capabilities sys_txt_get_caps( short screen );
+
+/*
+ * Set the display mode of a screen
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  mode = desired mode (one from TXT_MODE_TEXT, TXT_MODE_BITMAP, TXT_MODE_TILE, 
+ *                          TXT_MODE_SPRITE, TXT_MODE_SLEEP)
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_mode( short screen, short mode );
+
+/*
+ * Set text screen device driver to current screen geometry (resolution, border size)
+ *
+ * Inputs:
+ *  none
+ *
+ * Returns:
+ *  0 on succcess or any other number on error
+ */
+void sys_txt_setsizes();
+
+/*
+ * Set the base display resolution of the screen
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  horizontal = number of horizontal pixels
+ *  vertical = number of verticl pixels
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_resolution( short screen, short horizontal, short vertical );
+
+/*
+ * Set the size of the border (around the screen)
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  width = border width left and right of the screen in pixels
+ *  height = border height top and bottom of the screen in pixels
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_set_border( short screen, short width, short height );
+
+/*
+ * Set the color of the border (around the screen) with RGB components
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  red = red component of color (0-255)
+ *  green = green component of color (0-255)
+ *  blue = blue component of border (0-255)
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_set_border_color( short screen, unsigned byte red,
+                                unsigned byte green, unsigned byte blue );
+
+/*
+ * Set the font to be used in text mode for the screen
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  width = width of the characters in pixels
+ *  height = height of the characters in pixels
+ *  data = pointer to font data
+ *
+ * Returns:
+ *  0 on success, any other number means error (invalid screen, invalid font size)
+ */
+short sys_txt_set_font( short screen, short width, short heigth, 
+                                unisgend char *data );
+
+/*
+ * Set the appearance of the text mode cursor
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  enable = hide(0) or show (any other number) cursor
+ *  rate = blink rate of the cursor (in Hz, see MCP manual for ranges)
+ *  character = ASCII code of the glyph from the screen's font as the cursor
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_cursor( short screen, short enable, short rate, char character );
+
+/*
+ * Set the rectangular region of the screen that will be used for printing,
+ * scrolling and filling.
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  region = pointer to t_rect structure (upper left corner, width, height)
+ *              coordinates in character cells. (0,0) is upper-left,
+ *              size 0 means fullscreen
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_region( short screen, p_rect region );
+
+/*
+ * Set the foreground and background color for subsequent printing to the screen
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  foreground = color index for foreground color (0-15)
+ *  background = color index for background color (0-15)
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_set_color( short screen, short foreground, short background );
+
+/*
+ * Get the current foreground and background color
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  foreground = pointer to retrieve color index for foreground color (0-15)
+ *  background = pointer to retrieve color index for background color (0-15)
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+ short sys_txt_get_color( short screen, short *foreground, short *background );
+
+ /*
+ * Set cursor position on the screen, relative to origin of current region
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  x = relative x position (in character positions)
+ *  y = relative y position (in character positions)
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_set_xy( short screen, short x, short y );
+
+/*
+ * Get cursor position on the screen, relative to origin of current region
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  position = pointer to x,y structure to retrive position
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_get_xy( short screen, p_point position );
+
+/*
+ * Scroll the text in the current region
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  horizontal = number of horizontal pixels to scroll
+ *  vertical = number of verticl pixels to scroll
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_scroll( short screen, short horizontal, short vertical );
+
+/*
+ * Set visibility of the cursor
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  is_visible = hidden (FALSE or 0) or visible (any other number)
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_set_cursor_vis( short screen, short is_visible );
+
+/*
+ * SGet screensize in total pixels (so without taking the border into consideration)
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  text_size = pointer to t_extent structure to retrieve size in visible characters
+ *  pixel_size = pointer to t_extent structure to retrieve size in pixels
+ *
+ * Returns:
+ *  nothing
+ */
+void sys_txt_get_sizes( short screen, p_extent text_size, p_extent pixel_size );
 
 
 #endif
