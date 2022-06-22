@@ -256,8 +256,7 @@ typedef struct s_extent {
 /*
  * Structure to specify the location of a point on the screen
  */
- C256 FMX C256 U C256 GenX C256 U+ A2560 U+ A2560 X A2560 U A2560 K
-    typedef struct s_point {
+typedef struct s_point {
     short x;
     short y;
 } t_point, *p_point;

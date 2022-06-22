@@ -786,7 +786,7 @@ extern const char * sys_err_message(short err_number);
 
 /**
  * Text Display calls
- /**
+ **/
 
 /*
  * Reset a screen to its default text mode
