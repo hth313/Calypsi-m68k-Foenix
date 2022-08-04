@@ -246,7 +246,7 @@ short sys_chan_ioctrl(short channel, short command, uint8_t * buffer, short size
     return syscall(KFN_CHAN_IOCTRL, &params);
 }
 
-/* 
+/*
  * Register a channel device driver (NOT TESTED) <>
  *
  * Inputs:
@@ -698,7 +698,7 @@ unsigned long sys_mem_get_ramtop() {
  */
 unsigned long sys_mem_reserve( unsigned long size ) {
     t_syscall_params params = {.arg1 = (uint32_t)size};
-    return syscall(KFN_MEM_RESERVE, &params);  
+    return syscall(KFN_MEM_RESERVE, &params);
 }
 
 /*
@@ -712,7 +712,7 @@ unsigned long sys_mem_reserve( unsigned long size ) {
  */
 void sys_proc_elevate() {
     t_syscall_params params = {0};
-    syscall(KFN_PROC_ELEVATE, &params);   
+    syscall(KFN_PROC_ELEVATE, &params);
 }
 
 /*
@@ -727,7 +727,7 @@ void sys_proc_elevate() {
  */
 extern short sys_var_set( const char *name, const char *value ) {
     t_syscall_params params = {.arg1 = (uint32_t)name, .arg2= (uint32_t)value};
-    return syscall(KFN_VAR_SET, &params);      
+    return syscall(KFN_VAR_SET, &params);
 }
 
 /*
@@ -742,7 +742,7 @@ extern short sys_var_set( const char *name, const char *value ) {
  */
 const char *sys_var_get( const char *name ) {
     t_syscall_params params = {.arg1 = (uint32_t)name};
-    return (const char *)syscall(KFN_VAR_GET, &params);    
+    return (const char *)syscall(KFN_VAR_GET, &params);
 }
 
 /*
@@ -843,7 +843,7 @@ const char * sys_err_message(short err_number) {
  */
 extern void sys_txt_init_screen( short screen ) {
     t_syscall_params params = {.arg1 = screen};
-    syscall(KFN_TXT_INIT_SCREEN, &params);    
+    syscall(KFN_TXT_INIT_SCREEN, &params);
 }
 
 /*
@@ -857,7 +857,7 @@ extern void sys_txt_init_screen( short screen ) {
  */
 const p_txt_capabilities sys_txt_get_caps( short screen ) {
     t_syscall_params params = {.arg1 = screen};
-    return (p_txt_capabilities) syscall(KFN_TXT_GET_CAPS, &params);    
+    return (p_txt_capabilities) syscall(KFN_TXT_GET_CAPS, &params);
 }
 
 /*
@@ -865,7 +865,7 @@ const p_txt_capabilities sys_txt_get_caps( short screen ) {
  *
  * Inputs:
  *  screen = screenID of the screen
- *  mode = desired mode (one from TXT_MODE_TEXT, TXT_MODE_BITMAP, TXT_MODE_TILE, 
+ *  mode = desired mode (one from TXT_MODE_TEXT, TXT_MODE_BITMAP, TXT_MODE_TILE,
  *                          TXT_MODE_SPRITE, TXT_MODE_SLEEP)
  *
  * Returns:
@@ -873,7 +873,7 @@ const p_txt_capabilities sys_txt_get_caps( short screen ) {
  */
 short sys_txt_set_mode( short screen, short mode ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = mode};
-    return syscall(KFN_TXT_SET_MODE, &params);    
+    return syscall(KFN_TXT_SET_MODE, &params);
 }
 
 /*
@@ -887,7 +887,7 @@ short sys_txt_set_mode( short screen, short mode ) {
  */
 void sys_txt_setsizes() {
     t_syscall_params params = {0};
-    syscall(KFN_TXT_SETSIZES, &params);       
+    syscall(KFN_TXT_SETSIZES, &params);
 }
 
 /*
@@ -903,7 +903,7 @@ void sys_txt_setsizes() {
  */
 short sys_txt_set_resolution( short screen, short horizontal, short vertical ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = horizontal, .arg3 = vertical};
-    return syscall(KFN_TXT_SET_RESOLUTION, &params);   
+    return syscall(KFN_TXT_SET_RESOLUTION, &params);
 }
 
 /*
@@ -919,7 +919,7 @@ short sys_txt_set_resolution( short screen, short horizontal, short vertical ) {
  */
 void sys_txt_set_border( short screen, short width, short height ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = width, .arg3 = height};
-    syscall(KFN_TXT_SET_BORDER, &params);   
+    syscall(KFN_TXT_SET_BORDER, &params);
 }
 
 /*
@@ -938,7 +938,7 @@ void sys_txt_set_border_color( short screen, uint8_t red,
                                 uint8_t green, uint8_t blue ) {
     t_syscall_params params = {.arg1 = screen,
                                 .arg2 = red, .arg3 = green, .arg4 = blue};
-    syscall(KFN_TXT_SET_BORDER_COLOR, &params);   
+    syscall(KFN_TXT_SET_BORDER_COLOR, &params);
 }
 
 /*
@@ -953,11 +953,11 @@ void sys_txt_set_border_color( short screen, uint8_t red,
  * Returns:
  *  0 on success, any other number means error (invalid screen, invalid font size)
  */
-short sys_txt_set_font( short screen, short width, short height, 
+short sys_txt_set_font( short screen, short width, short height,
                                 unsigned char *data ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = width, .arg3 = height,
                                 .arg4 = (uint32_t)data};
-    return syscall(KFN_TXT_SET_FONT, &params);   
+    return syscall(KFN_TXT_SET_FONT, &params);
 }
 
 /*
@@ -975,7 +975,7 @@ short sys_txt_set_font( short screen, short width, short height,
 short sys_txt_set_cursor( short screen, short enable, short rate, char character ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = enable,
                                 .arg3 = rate, .arg4 = character};
-    return syscall(KFN_TXT_SET_CURSOR, &params);   
+    return syscall(KFN_TXT_SET_CURSOR, &params);
 }
 
 /*
@@ -993,7 +993,7 @@ short sys_txt_set_cursor( short screen, short enable, short rate, char character
  */
 short sys_txt_set_region( short screen, p_rect region ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = (uint32_t)region};
-    return syscall(KFN_TXT_SET_REGION, &params);   
+    return syscall(KFN_TXT_SET_REGION, &params);
 }
 
 /*
@@ -1009,7 +1009,7 @@ short sys_txt_set_region( short screen, p_rect region ) {
  */
 short sys_txt_set_color( short screen, short foreground, short background ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = foreground, .arg3 = background};
-    return syscall(KFN_TXT_SET_COLOR, &params);   
+    return syscall(KFN_TXT_SET_COLOR, &params);
 }
 
 /*
@@ -1027,7 +1027,7 @@ short sys_txt_set_color( short screen, short foreground, short background ) {
     t_syscall_params params = {.arg1 = screen,
                                 .arg2 = (uint32_t)foreground,
                                 .arg3 = (uint32_t)background};
-    return syscall(KFN_TXT_GET_COLOR, &params);   
+    return syscall(KFN_TXT_GET_COLOR, &params);
  }
 
  /*
@@ -1043,7 +1043,7 @@ short sys_txt_set_color( short screen, short foreground, short background ) {
  */
 void sys_txt_set_xy( short screen, short x, short y ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = x, .arg3 = y};
-    syscall(KFN_TXT_SET_XY, &params);   
+    syscall(KFN_TXT_SET_XY, &params);
 }
 
 /*
@@ -1058,7 +1058,7 @@ void sys_txt_set_xy( short screen, short x, short y ) {
  */
 void sys_txt_get_xy( short screen, p_point position ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = (uint32_t)position};
-    syscall(KFN_TXT_GET_XY, &params);   
+    syscall(KFN_TXT_GET_XY, &params);
 }
 
 /*
@@ -1075,7 +1075,7 @@ void sys_txt_get_xy( short screen, p_point position ) {
 void sys_txt_scroll( short screen, short horizontal, short vertical ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = horizontal,
                                 .arg3 = vertical};
-    syscall(KFN_TXT_SCROLL, &params);   
+    syscall(KFN_TXT_SCROLL, &params);
 }
 
 /*
@@ -1090,7 +1090,7 @@ void sys_txt_scroll( short screen, short horizontal, short vertical ) {
  */
 void sys_txt_set_cursor_vis( short screen, short is_visible ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = is_visible};
-    syscall(KFN_TXT_SET_CURSOR_VIS, &params);   
+    syscall(KFN_TXT_SET_CURSOR_VIS, &params);
 }
 
 /*
@@ -1107,5 +1107,5 @@ void sys_txt_set_cursor_vis( short screen, short is_visible ) {
 void sys_txt_get_sizes( short screen, p_extent text_size, p_extent pixel_size ) {
     t_syscall_params params = {.arg1 = screen, .arg2 = (uint32_t)text_size,
                                 (uint32_t)pixel_size};
-    syscall(KFN_TXT_GET_SIZES, &params);   
+    syscall(KFN_TXT_GET_SIZES, &params);
 }
