@@ -241,4 +241,53 @@ typedef struct {
     int32_t arg6;
 } t_syscall_params, *p_syscall_params;
 
+/*=========================================
+ * Screen information
+ *========================================*/
+
+/*
+ * Structure to specify the size of a rectangle
+ */
+typedef struct s_extent {
+    short width;        /**< The width of the region */
+    short height;       /**< The height of the region */
+} t_extent, *p_extent;
+
+/*
+ * Structure to specify the location of a point on the screen
+ */
+typedef struct s_point {
+    short x;
+    short y;
+} t_point, *p_point;
+
+/**< The column of the point */
+/**< The row of the point */
+/*
+ * Structure to specify a rectangular area on the screen
+ */
+typedef struct s_rect {
+    t_point origin;         /**< The upper-left corner of the rectangle */
+    t_extent size;          /**< The size of the rectangle */
+} t_rect, *p_rect;
+
+/*
+* Structure to specify the capabilities of a screen’s text driver
+*/
+typedef struct s_txt_capabilities {
+short number;
+short supported_modes;
+short font_size_count;
+p_extent font_sizes;
+/**< The unique ID of the screen */
+/**< The display modes supported on this screen */
+/**< The number of supported font sizes */
+/**< Pointer to a list of t_extent listing all
+supported font sizes (in pixels) */
+    short resolution_count;     /**< The number of supported display resolutions */
+    p_extent resolutions;       /**< Pointer to a list of t_extent listing all
+supported display resolutions (in pixels) */
+} t_txt_capabilities, *p_txt_capabilities;
+
+
 #endif
