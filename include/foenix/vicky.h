@@ -8,7 +8,6 @@
 #define VICKY_BASE  0x00b40000
 #define VRAM_BASE   0x00800000
 #define VRAM_BASE_A VRAM_BASE
-#define VRAM_BASE_B VRAM_BASE
 #endif
 
 #if __FOENIX_A2560_REGISTER_SIZE__ == 32
@@ -18,37 +17,51 @@
 #define VRAM_BASE_B 0x00c00000
 #endif
 
-typedef uint8_t * vram_ptr;
-
 // ----------------------------------------------------------------------
 //
 // Vicky
 //
 // ----------------------------------------------------------------------
 
-typedef struct vicky {
+typedef struct _Vicky Vicky_t;
+
+// Vicky registers
+#define Vicky (* (Vicky_t volatile __far *) VICKY_BASE)
+
+typedef uint8_t * vram_ptr;
+
+typedef union {
+  struct {
+    uint8_t blue;
+    uint8_t green;
+    uint8_t red;
+  };
+  uint32_t reg;
+} color_t;
+
+struct _Vicky {
   union {                       // master control register
     struct {
-      uint32_t text_mode_enable:1;
-      uint32_t text_mode_overlay_enable:1;
-      uint32_t graphic_mode_enable:1;
-      uint32_t bitmap_engine_enable:1;
-      uint32_t tile_engine_enable:1;
-      uint32_t sprite_engine_enable:1;
-      uint32_t  :1;
-      uint32_t disable_video_display:1;
-      uint32_t video_mode0:1;
-      uint32_t video_mode1:1;
-      uint32_t double_pixel_mode:1;
-      uint32_t  :2;
-      uint32_t gamma_dipswitch_value:1;   // read-only
-      uint32_t hires_dipswitch_value:1;   // read-only
-      uint32_t active_clock:1;            // read-only
-      uint32_t gamma_choice_input:1;
-      uint32_t gamma_enable:1;
-      uint32_t display_sleep:1;           // turn sync off
-      uint32_t  :5;
-      uint32_t  :8;
+      uint32_t text_mode_enable         : 1;
+      uint32_t text_mode_overlay_enable : 1;
+      uint32_t graphic_mode_enable      : 1;
+      uint32_t bitmap_engine_enable     : 1;
+      uint32_t tile_engine_enable       : 1;
+      uint32_t sprite_engine_enable     : 1;
+      uint32_t                          : 1;
+      uint32_t disable_video_display    : 1;
+      uint32_t video_mode0              : 1;
+      uint32_t video_mode1              : 1;
+      uint32_t double_pixel_mode        : 1;
+      uint32_t                          : 2;
+      uint32_t gamma_dipswitch_value    : 1;   // read-only
+      uint32_t hires_dipswitch_value    : 1;   // read-only
+      uint32_t active_clock             : 1;   // read-only
+      uint32_t gamma_choice_input       : 1;
+      uint32_t gamma_enable             : 1;
+      uint32_t display_sleep            : 1;   // turn sync off
+      uint32_t                          : 5;
+      uint32_t                          : 8;
     };
     uint32_t reg;
   } master_control;
@@ -67,25 +80,9 @@ typedef struct vicky {
       };
       uint32_t control;
     };
-    union {                       // border color register
-      struct {
-        uint32_t blue:8;
-        uint32_t green:8;
-        uint32_t red:8;
-        uint32_t  :8;
-      };
-      uint32_t reg;
-    } color;
+    color_t color;              // border color register
   } border;
-  union {                       // background color register
-    struct {
-      uint32_t blue:8;
-      uint32_t green:8;
-      uint32_t red:8;
-      uint32_t  :8;
-    };
-    uint32_t reg;
-  } background_color;
+  color_t background_color;     // background color register
   union {                       // cursor control register
     struct {
       uint32_t enable:1;
@@ -166,7 +163,7 @@ typedef struct vicky {
     } line_interrupt_23;
   };
 #endif
-} vicky_t;
+};
 
 enum cursor_font_size { Cursor_font_8x8, Cursor_font_8x16 };
 
@@ -177,16 +174,13 @@ enum cursor_flash_rate {
   Flash_0_20_sec
 };
 
-// Vicky registers
-#define vicky ((vicky_t*)VICKY_BASE)
-
 // ----------------------------------------------------------------------
 //
 // Tile map
 //
 // ----------------------------------------------------------------------
 
-typedef struct tilemap {
+typedef struct tilemap { // all tilemap registers are write ONLY
   union {
     struct {
       uint16_t layer_enable:1;
@@ -207,9 +201,9 @@ typedef struct tilemap {
 } tilemap_t;
 
 
-// There are four tilemap register sets, use them as tilemap[n].field
+// There are four tilemap register sets, use them as Tilemap[n].field
 // where n is 0-3.
-#define tilemap ((tilemap_t __far *)(VICKY_BASE + 0x0200))
+#define Tilemap ((tilemap_t __far *)(VICKY_BASE + 0x0200))
 
 // Bits for control register
 #define TILE_Enable       0x01
@@ -238,13 +232,15 @@ inline vram_ptr vicky_address_a (vram_ptr p) {
 }
 
 // Adjust video RAM address for Vicky buffer A (32 bit systems)
+#ifdef VRAM_BASE_B
 inline vram_ptr vicky_address_b (vram_ptr p) {
   return (vram_ptr) ((long)p - VRAM_BASE_B);
 }
+#endif // VRAM_BASE_B
 
-// There are eight tileset register sets, use them as tileset[n].field
+// There are eight tileset register sets, use them as Tileset[n].field
 // where n is 0-7.
-#define tileset ((tileset_t __far *)(VICKY_BASE + 0x0280))
+#define Tileset ((tileset_t volatile __far *)(VICKY_BASE + 0x0280))
 
 // ----------------------------------------------------------------------
 //
@@ -267,9 +263,9 @@ typedef struct bitplane {
   vram_ptr start;
 } bitplane_t;
 
-// There are two bitmap planes, use them as bitplane[n].field
+// There are two bitmap planes, use them as Bitplane[n].field
 // where n is 0-1.
-#define bitplane ((bitplane_t __far *)(VICKY_BASE + 0x0100)
+#define Bitplane ((bitplane_t __far *)(VICKY_BASE + 0x0100)
 
 // ----------------------------------------------------------------------
 //
@@ -277,7 +273,7 @@ typedef struct bitplane {
 //
 // ----------------------------------------------------------------------
 
-typedef struct sprite {
+typedef struct sprite { // all sprite registers are write ONLY
   union {
     struct {
       uint16_t enable : 1;
@@ -292,8 +288,8 @@ typedef struct sprite {
   uint16_t y;
 } sprite_t;
 
-// There are 64 sprite register sets, use them as sprite[n].field
+// There are 64 sprite register sets, use them as Sprite[n].field
 // where n is 0-63.
-#define sprite ((sprite_t __far *)(VICK_BASE + 0x1000))
+#define Sprite ((sprite_t __far *)(VICKY_BASE + 0x1000))
 
 #endif // __VICKY_H__
