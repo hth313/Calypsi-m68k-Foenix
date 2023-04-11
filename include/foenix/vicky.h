@@ -64,6 +64,22 @@ struct _Vicky {
       uint32_t                          : 8;
     };
     uint32_t reg;
+#define TEXT_MODE_ENABLE           0x00000001
+#define TEXT_MODE_OVERLAY_ENABLE   0x00000002
+#define GRAPHIC_MODE_ENABLE        0x00000004
+#define BITMAP_ENGINE_ENABLE       0x00000008
+#define TILE_ENGINE_ENABLE         0x00000010
+#define SPRITE_ENGINE_ENABLE       0x00000020
+#define DISABLE_VIDEO_DISPLAY      0x00000080
+#define VIDEO_MODE0                0x00000100
+#define VIDEO_MODE1                0x00000200
+#define DOUBLE_PIXEL_MODE          0x00000400
+#define GAMMA_DIPSWITCH_VALUE      0x00002000
+#define HIRES_DIPSWITCH_VALUE      0x00004000
+#define ACTIVE_CLOCK               0x00008000
+#define GAMMA_CHOICE_INPUT         0x00010000
+#define GAMMA_ENABLE               0x00020000
+#define DISPLAY_SLEEP              0x00040000
   } master_control;
   struct {
     union {                     // border control register
