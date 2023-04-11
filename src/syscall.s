@@ -1,11 +1,14 @@
               .rtmodel version, "1"
               .rtmodel cpu, "*"
+
+#include "macros.h"
+
 ;;;
 ;;; Function to make a system call based on the number of the system function:
 ;;; int32_t syscall(int32_t number, int32_t p0, int32_t p1, int32_t p2, int32_t p3, int32_t p4, int32_t p5)
 ;;;
               .public syscall
-              .section code
+              .section libcode
               .align  2
 syscall:
               movem.l d2-d6,-(sp)   ; Save caller's registers
