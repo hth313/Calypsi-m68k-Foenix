@@ -27,6 +27,10 @@ typedef struct _SystemControl {
       uint16_t manual_reset      : 1;
     };
     uint16_t control;
+#define POWER_LED      0x0001
+#define SD_LED         0x0002
+#define BUZZER         0x0010
+#define MANUAL_RESET   0x8000
   };
   uint16_t security_word;
   union {
@@ -37,6 +41,8 @@ typedef struct _SystemControl {
       uint16_t                   : 8;
     };
     uint16_t lfsr_control;
+#define LFSR_ENABLE     0x0001
+#define SEED_WRITE      0x0002
   };
   uint16_t seed;
   uint16_t random;
