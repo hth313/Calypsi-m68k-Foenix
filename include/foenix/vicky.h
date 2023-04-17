@@ -30,15 +30,6 @@ typedef struct _Vicky Vicky_t;
 
 typedef uint8_t * vram_ptr;
 
-typedef union {
-  struct {
-    uint8_t blue;
-    uint8_t green;
-    uint8_t red;
-  };
-  uint32_t reg;
-} color_t;
-
 struct _Vicky {
   union {                       // master control register
     struct {
@@ -63,7 +54,7 @@ struct _Vicky {
       uint32_t                          : 5;
       uint32_t                          : 8;
     };
-    uint32_t reg;
+    uint32_t master_control;
 #define TEXT_MODE_ENABLE           0x00000001
 #define TEXT_MODE_OVERLAY_ENABLE   0x00000002
 #define GRAPHIC_MODE_ENABLE        0x00000004
@@ -80,7 +71,7 @@ struct _Vicky {
 #define GAMMA_CHOICE_INPUT         0x00010000
 #define GAMMA_ENABLE               0x00020000
 #define DISPLAY_SLEEP              0x00040000
-  } master_control;
+  };
   struct {
     union {                     // border control register
       struct {
@@ -96,9 +87,9 @@ struct _Vicky {
       };
       uint32_t control;
     };
-    color_t color;              // border color register
+    uint32_t color;
   } border;
-  color_t background_color;     // background color register
+  uint32_t background_color;     // background color register
   union {                       // cursor control register
     struct {
       uint32_t enable:1;
@@ -118,8 +109,8 @@ struct _Vicky {
       uint32_t x:16;
       uint32_t y:16;
     };
-    uint32_t reg;
-  } cursor_position;
+    uint32_t cursor_position;
+  };
 #if __FOENIX_A2560_REGISTER_SIZE__ == 16
   union {                       // line interrupt register (4 of them)
     union {
@@ -128,7 +119,7 @@ struct _Vicky {
         uint16_t  :3;
         uint16_t compare:12;
       };
-      uint16_t reg;
+      uint16_t comtrol;
     } line_interrupt[4]; // note: indexed style only works on 16 bit system
     union {
       struct {
@@ -203,8 +194,8 @@ typedef struct tilemap { // all tilemap registers are write ONLY
       uint16_t  :5;
       uint16_t collision_on:1;
     };
-    uint16_t  reg;
-  } control;
+    uint16_t  control;
+  };
   vram_ptr data;
   uint16_t width;
   uint16_t height;
@@ -219,7 +210,7 @@ typedef struct tilemap { // all tilemap registers are write ONLY
 
 // There are four tilemap register sets, use them as Tilemap[n].field
 // where n is 0-3.
-#define Tilemap ((tilemap_t __far *)(VICKY_BASE + 0x0200))
+#define Tilemap ((tilemap_t volatile __far *)(VICKY_BASE + 0x0200))
 
 // Bits for control register
 #define TILE_Enable       0x01
@@ -274,14 +265,14 @@ typedef struct bitplane {
       uint32_t  :1;
       uint32_t  :24;
     };
-    uint32_t reg;
-  } control;
+    uint32_t control;
+  };
   vram_ptr start;
 } bitplane_t;
 
 // There are two bitmap planes, use them as Bitplane[n].field
 // where n is 0-1.
-#define Bitplane ((bitplane_t __far *)(VICKY_BASE + 0x0100)
+#define Bitplane ((bitplane_t volatile __far *)(VICKY_BASE + 0x0100)
 
 // ----------------------------------------------------------------------
 //
@@ -296,9 +287,19 @@ typedef struct sprite { // all sprite registers are write ONLY
       uint16_t lut : 3;
       uint16_t depth : 3;
       uint16_t collision_enable : 1;
+      uint16_t addy_low : 8;
     };
-    uint16_t reg;
-  } control;
+    uint16_t control;
+#define SPRITE_ENABLE               0x01
+#define SPRITE_LUT(lut)             ((lut) << 1)
+#define SPRITE_DEPTH(depth)         ((depth) << 4)
+#define SPRITE_COLLISION_ENABLE     0x80
+#define SPRITE_ADDY_LOW(addy)       (((addy) & 0xff) << 8)
+  };
+
+  uint16_t addy_high;
+#define SPRITE_ADDY_HIGH(addy)      ((addy) >> 8)
+
   vram_ptr data;
   uint16_t x;
   uint16_t y;
@@ -306,6 +307,20 @@ typedef struct sprite { // all sprite registers are write ONLY
 
 // There are 64 sprite register sets, use them as Sprite[n].field
 // where n is 0-63.
-#define Sprite ((sprite_t __far *)(VICKY_BASE + 0x1000))
+#define Sprite ((sprite_t volatile __far *)(VICKY_BASE + 0x1000))
+
+#define SPRITE_SIZE   1024
+
+// ----------------------------------------------------------------------
+//
+// Color lookup table
+//
+// ----------------------------------------------------------------------
+
+typedef struct lut {
+  uint8_t data[256][4];
+} lut_t;
+
+#define LUT ((lut_t volatile __far *)(VICKY_BASE + 0x2000))
 
 #endif // __VICKY_H__
