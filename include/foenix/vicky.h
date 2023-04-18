@@ -6,7 +6,7 @@
 
 #if __FOENIX_A2560_REGISTER_SIZE__ == 16
 #define VICKY_BASE  0x00b40000
-#define VRAM_BASE   0x00800000
+#define VRAM_BASE   0x00c00000
 #define VRAM_BASE_A VRAM_BASE
 #endif
 
@@ -294,13 +294,12 @@ typedef struct sprite { // all sprite registers are write ONLY
 #define SPRITE_LUT(lut)             ((lut) << 1)
 #define SPRITE_DEPTH(depth)         ((depth) << 4)
 #define SPRITE_COLLISION_ENABLE     0x80
-#define SPRITE_ADDY_LOW(addy)       (((addy) & 0xff) << 8)
+#define SPRITE_ADDY_LOW(addy)       ((((long)addy) & 0xff) << 8)
   };
 
   uint16_t addy_high;
-#define SPRITE_ADDY_HIGH(addy)      ((addy) >> 8)
+#define SPRITE_ADDY_HIGH(addy)      (((long)addy) >> 8)
 
-  vram_ptr data;
   uint16_t x;
   uint16_t y;
 } sprite_t;
