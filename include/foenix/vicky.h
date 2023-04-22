@@ -4,29 +4,14 @@
 #include <stdint.h>
 #include "foenix/types.h"
 
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
-#define VICKY_BASE  0x00b40000
-#define VRAM_BASE   0x00c00000
-#define VRAM_BASE_A VRAM_BASE
-#endif
-
-#if __FOENIX_A2560_REGISTER_SIZE__ == 32
-#define VICKY_BASE  0xfec40000
-#define VRAM_BASE   0x00800000
-#define VRAM_BASE_A VRAM_BASE
+extern unsigned long _VickyBaseVRAM;
 #define VRAM_BASE_B 0x00c00000
-#endif
 
 // ----------------------------------------------------------------------
 //
 // Vicky
 //
 // ----------------------------------------------------------------------
-
-typedef struct _Vicky Vicky_t;
-
-// Vicky registers
-#define Vicky (* (Vicky_t volatile __far *) VICKY_BASE)
 
 typedef uint8_t * vram_ptr;
 
@@ -207,11 +192,6 @@ typedef struct tilemap { // all tilemap registers are write ONLY
   } x, y;
 } tilemap_t;
 
-
-// There are four tilemap register sets, use them as Tilemap[n].field
-// where n is 0-3.
-#define Tilemap ((tilemap_t volatile __far *)(VICKY_BASE + 0x0200))
-
 // Bits for control register
 #define TILE_Enable       0x01
 #define TILE_Collision_On 0x40 /* Enable */
@@ -230,24 +210,13 @@ typedef struct tileset {
 
 // Adjust video RAM address for Vicky.
 inline vram_ptr vicky_address (vram_ptr p) {
-  return (vram_ptr) ((long)p - VRAM_BASE);
+  return (vram_ptr) ((long)p - _VickyBaseVRAM);
 }
 
-// Adjust video RAM address for Vicky buffer A (32 bit systems)
-inline vram_ptr vicky_address_a (vram_ptr p) {
-  return (vram_ptr) ((long)p - VRAM_BASE_A);
-}
-
-// Adjust video RAM address for Vicky buffer A (32 bit systems)
-#ifdef VRAM_BASE_B
+// Adjust video RAM address for Vicky buffer B (32 bit systems only)
 inline vram_ptr vicky_address_b (vram_ptr p) {
   return (vram_ptr) ((long)p - VRAM_BASE_B);
 }
-#endif // VRAM_BASE_B
-
-// There are eight tileset register sets, use them as Tileset[n].field
-// where n is 0-7.
-#define Tileset ((tileset_t volatile __far *)(VICKY_BASE + 0x0280))
 
 // ----------------------------------------------------------------------
 //
@@ -269,10 +238,6 @@ typedef struct bitplane {
   };
   vram_ptr start;
 } bitplane_t;
-
-// There are two bitmap planes, use them as Bitplane[n].field
-// where n is 0-1.
-#define Bitplane ((bitplane_t volatile __far *)(VICKY_BASE + 0x0100)
 
 // ----------------------------------------------------------------------
 //
@@ -304,10 +269,6 @@ typedef struct sprite { // all sprite registers are write ONLY
   uint16_t y;
 } sprite_t;
 
-// There are 64 sprite register sets, use them as Sprite[n].field
-// where n is 0-63.
-#define Sprite ((sprite_t volatile __far *)(VICKY_BASE + 0x1000))
-
 #define SPRITE_SIZE   1024
 
 // ----------------------------------------------------------------------
@@ -320,6 +281,40 @@ typedef struct lut {
   uint8_t data[256][4];
 } lut_t;
 
-#define LUT ((lut_t volatile __far *)(VICKY_BASE + 0x2000))
+struct _CompleteVicky {
+  union {                         // base registers
+    struct _Vicky vicky;
+    char _vicky_skip[0x0100];
+  };
+  union {
+    bitplane_t bitplane[2];       // bitplane registers offset 0x0100
+    char _bitplane_skip[0x100];
+  };
+  union {
+    tilemap_t tilemap[4];         // timemap registers offset 0x0200
+    char _tilemap_skip[0x80];
+  };
+  union {
+    tileset_t tileset[8];         // tileset registers offset 0x0280
+    char _tileset_skip[0x1000 - 0x0280];
+  };
+  union {
+    sprite_t sprite[64];          // sprite registers offset 0x1000
+    char _sprite_skip[0x1000];
+  };
+  lut_t lut;                      // lut registers offset 0x2000
+};
+
+// Vicky base address has been set up by C startup.
+extern struct _CompleteVicky volatile *_Vicky;
+#define _CompleteVicky (*_Vicky)
+
+// Convenience access macros
+#define Vicky      _CompleteVicky.vicky
+#define Sprite     _CompleteVicky.sprite
+#define Bitplane   _CompleteVicky.bitplane
+#define Tileset    _CompleteVicky.tileset
+#define Tilemap    _CompleteVicky.tilemap
+#define LUT        _CompleteVicky.lut
 
 #endif // __VICKY_H__
