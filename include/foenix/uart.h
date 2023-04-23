@@ -3,17 +3,7 @@
 
 #include <stdint.h>
 
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
-#define GavinBase 0x00b00000
-#else
-#define GavinBase 0xfec00000
-#endif
-
-typedef struct uart uart_t;
-
-#define UART (* (volatile uart_t*) (GavinBase + 0x28f8) )
-
-struct uart {
+struct _UART {
   union {
     struct {           // when DLAB=1
       uint8_t  dll;    // baud rate low

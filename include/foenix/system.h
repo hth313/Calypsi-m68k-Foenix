@@ -7,15 +7,8 @@
 #define __A2560_SYSTEM_H__
 
 #include <stdint.h>
-#include "foenix/types.h"
 
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
-#define GavinBase 0x00b00000
-#else
-#define GavinBase 0xfec00000
-#endif
-
-typedef struct _SystemControl {
+struct _SystemControl {
   union {
     struct {
       uint16_t power_led         : 1;
@@ -65,7 +58,7 @@ typedef struct _SystemControl {
   uint16_t reserved;
   uint16_t byteOrderHigh;        // 0x4567
   uint16_t byteOrderLow;         // 0x1234
-} SystemControl_t;
+};
 
 typedef enum MachineID {
   Machine_FMX, Machine_C256U, Machine_C256JR, Machine_A2560DEV,
@@ -73,6 +66,6 @@ typedef enum MachineID {
   Machine_A2560X, Machine_A2560U, Machine_A2560M, Machine_A2560K
 } MachineID_t;
 
-#define SystemControl (* (volatile SystemControl_t*) GavinBase)
+#include <foenix/gavin.h>
 
 #endif // __A2560_SYSTEM_H__

@@ -3,17 +3,7 @@
 
 #include <stdint.h>
 
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
-#define GavinBase 0x00b00000
-#else
-#define GavinBase 0xfec00000
-#endif
-
-typedef struct rtc rtc_t;
-
-#define RTC  (* (volatile rtc_t*) (GavinBase + 0x0080) )
-
-struct rtc {
+struct _RTC {
   uint8_t time_seconds;
   uint8_t _padding_time_seconds;
   uint8_t alarm_seconds;
@@ -81,5 +71,7 @@ struct rtc {
   uint8_t century;
   uint8_t _padding_century;
 };
+
+#include <foenix/gavin.h>
 
 #endif // __A2560_RTC_H__

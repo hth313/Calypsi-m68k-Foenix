@@ -3,17 +3,7 @@
 
 #include <stdint.h>
 
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
-#define GavinBase 0x00b00000
-#else
-#define GavinBase 0xfec00000
-#endif
-
-typedef struct joystick joystick_t;
-
-#define JOYSTICK (* (volatile joystick_t*) (GavinBase + 0x0500) )
-
-struct joystick {
+struct _Joystick {
   uint16_t atari_input;
 #define JOY0_UP         0x0100
 #define JOY0_DOWN       0x0200
@@ -65,5 +55,6 @@ struct joystick {
 #define SD_WRITE_PROTECT 0x0200
 };
 
+#include <foenix/gavin.h>
 
 #endif // __A2560_JOYSTICK_H__

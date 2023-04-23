@@ -3,18 +3,12 @@
 
 #include <stdint.h>
 
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
-#define GavinBase 0x00b00000
-#else
-#define GavinBase 0xfec00000
-#endif
-
 struct timer_entity {
   uint32_t value;
   uint32_t compare;
 };
 
-typedef struct timer {
+struct _Timer {
   uint32_t control0;
 #define TIMER0_ENABLE            0x00000001
 #define TIMER0_CLEAR             0x00000002
@@ -55,8 +49,8 @@ typedef struct timer {
 #define TIMER3_COMPARE_EQUAL     0x40000000
 
   struct timer_entity entity[4];
-} timer_t;
+};
 
-#define TIMER  (* (volatile timer_t*) (GavinBase + 0x0200) )
+#include <foenix/gavin.h>
 
 #endif // __A2560_TIMER_H__

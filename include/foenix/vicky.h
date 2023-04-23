@@ -2,7 +2,6 @@
 #define __VICKY_H__
 
 #include <stdint.h>
-#include "foenix/types.h"
 
 extern unsigned long _VickyBaseVRAM;
 #define VRAM_BASE_B 0x00c00000

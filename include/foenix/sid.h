@@ -3,13 +3,7 @@
 
 #include <stdint.h>
 
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
-#define GavinBase 0x00b00000
-#else
-#define GavinBase 0xfec00000
-#endif
-
-struct sid_voice {
+struct _SID_voice {
   uint8_t freq_low;
   uint8_t freq_high;
   uint8_t pw_low;
@@ -27,8 +21,8 @@ struct sid_voice {
   uint8_t sustain_release;
 };
 
-typedef struct sid {
-  struct sid_voice voice[3];
+struct _SID {
+  struct _SID_voice voice[3];
   uint8_t filter_fc_low;
   uint8_t filter_fc_high;
   uint8_t filter_res_filt;
@@ -37,10 +31,8 @@ typedef struct sid {
   uint8_t poty;
   uint8_t osc3_random;
   uint8_t env3;
-} sid_t;
+};
 
-#define SID_LEFT  (* (volatile sid_t*) (GavinBase + 0x1000) )
-#define SID_RIGHT (* (volatile sid_t*) (GavinBase + 0x1200) )
-#define SID_MONO  (* (volatile sid_t*) (GavinBase + 0x1400) )
+#include <foenix/beatrix.h>
 
 #endif // __A2560_SID_H__

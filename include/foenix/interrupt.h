@@ -6,12 +6,6 @@
 
 #include <stdint.h>
 
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
-#define GavinBase 0x00b00000
-#else
-#define GavinBase 0xfec00000
-#endif
-
 struct InterruptBits {
   uint16_t vicky;
 #define INT_VICKY_SOF               0x0001
@@ -41,13 +35,13 @@ struct InterruptBits {
   uint16_t reserved;
 };
 
-typedef struct {
+struct _InterruptController {
   struct InterruptBits pending;
   struct InterruptBits polarity;      // not in use
   struct InterruptBits edge;          // not in use
   struct InterruptBits mask;
-} InterruptController_t;
+};
 
-#define InterruptController  (* (volatile InterruptController_t*) (GavinBase + 0x100))
+#include <foenix/gavin.h>
 
 #endif // __A2560_INTERRUPT_H__

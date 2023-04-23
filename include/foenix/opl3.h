@@ -5,13 +5,7 @@
 
 #include <stdint.h>
 
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
-#define GavinBase 0x00b00000
-#else
-#define GavinBase 0xfec00000
-#endif
-
-typedef struct opl3 {
+struct _OPL3 {
   uint8_t test;
   uint8_t timer1;
   uint8_t timer2;
@@ -73,9 +67,8 @@ typedef struct opl3 {
 
   uint8_t _reserved5[7+16];
   uint8_t wave_select[16+6];
-} opl3_t;
+};
 
-#define OPL3_RIGHT (* (volatile opl3_t*) (GavinBase + 0x0201) )
-#define OPL3_LEFT  (* (volatile opl3_t*) (GavinBase + 0x0301) )
+#include <foenix/beatrix.h>
 
 #endif // __A2560_OPL3_H__
