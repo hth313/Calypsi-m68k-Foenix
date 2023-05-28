@@ -1,0 +1,21 @@
+(define memories
+  '((memory flash (address (#x200000 . #x2fffff)) (type ROM))
+    (memory dataRAM (address (#x300000 . #x37ffff)) (type RAM))
+    (memory Vector (address (#x0000 . #x03ff)))
+
+    (memory palettes (address (#xfec42000 . #xfec43fff))
+            (section (palette0 #xfec42000) (palette1 #xfec42400)
+                     (palette2 #xfec42800) (palette3 #xfec42c00)
+                     (palette4 #xfec43000) (palette5 #xfec43400)
+                     (palette6 #xfec43800) (palette7 #xfec43c00)))
+    (memory vram (address (#x800000 . #xbfffff))
+            (section vram))
+
+    (memory palettes2 (address (#xfec82000 . #xfec83fff))
+            (section (palette0_2 #xfec82000) (palette1_2 #xfec82400)
+                     (palette2_2 #xfec82800) (palette3_2 #xfec82c00)
+                     (palette4_2 #xfec83000) (palette5_2 #xfec83400)
+                     (palette6_2 #xfec83800) (palette7_2 #xfec83c00)))
+    (memory vram2 (address (#x800000 . #xbfffff))
+            (section vram2))
+    ))

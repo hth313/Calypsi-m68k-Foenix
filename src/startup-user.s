@@ -21,8 +21,19 @@
 
 #ifdef __CALYPSI_TARGET_SYSTEM_FOENIX__
               .extern _Gavin
+              .extern _Beatrix
+              .extern _Vicky
+              .extern _VickyBaseVRAM
+
 # define GavinLow   0x00b00000
-# define GavinHigh  0xfec00000
+# define BeatrixLow 0x00b20000
+# define VickyLow   0x00b40000
+# define VickyBaseVRAMLow 0x00c00000
+
+# define GavinHigh   0xfec00000
+# define BeatrixHigh 0xfec20000
+# define VickyHigh   0xfec40000
+# define VickyBaseVRAMHigh 0x00800000
 #endif
 
 #include "macros.h"
@@ -77,15 +88,27 @@ __call_heap_initialize:
               .pubweak _Gavin_initialize
 _Gavin_initialize:
               move.l  #GavinLow,a0  ; assume A2560U system
+              move.l  #BeatrixLow,a2
+              move.l  #VickyLow,a1
+              move.l  #VickyBaseVRAMLow,d0
               cmp.w   #0x4567,0x0010(a0) ; check byte order
               beq.s   20$
               move.l  #GavinHigh,a0 ; no, assume A2560K 32-bit
+              move.l  #BeatrixHigh,a2
+              move.l  #VickyHigh,a1
+              move.l  #VickyBaseVRAMHigh,d0
 20$:
               ;; keep base pointer to Gavin
 #ifdef __CALYPSI_DATA_MODEL_SMALL__
               move.l  a0,(.near _Gavin,A4)
+              move.l  a2,(.near _Beatrix,A4)
+              move.l  a1,(.near _Vicky,A4)
+              move.l  d0,(.near _VickyBaseVRAM,A4)
 #else
               move.l  a0,_Gavin
+              move.l  a2,_Beatrix
+              move.l  a1,_Vicky
+              move.l  d0,_VickyBaseVRAM
 #endif // __CALYPSI_DATA_MODEL_SMALL__
 #endif // __CALYPSI_TARGET_SYSTEM_FOENIX__
 
