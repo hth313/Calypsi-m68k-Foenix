@@ -245,6 +245,15 @@ typedef struct {
  * Screen information
  *========================================*/
 
+/* 
+ * Screen modes 
+ */
+#define TXT_MODE_TEXT   0x0001
+#define TXT_MODE_BITMAP 0x0002
+#define TXT_MODE_SPRITE 0x0004
+#define TXT_MODE_TILE   0x0008
+#define TXT_MODE_SLEEP  0x0010
+
 /*
  * Structure to specify the size of a rectangle
  */
@@ -275,18 +284,14 @@ typedef struct s_rect {
 * Structure to specify the capabilities of a screen’s text driver
 */
 typedef struct s_txt_capabilities {
-short number;
-short supported_modes;
-short font_size_count;
-p_extent font_sizes;
-/**< The unique ID of the screen */
-/**< The display modes supported on this screen */
-/**< The number of supported font sizes */
-/**< Pointer to a list of t_extent listing all
-supported font sizes (in pixels) */
-    short resolution_count;     /**< The number of supported display resolutions */
-    p_extent resolutions;       /**< Pointer to a list of t_extent listing all
-supported display resolutions (in pixels) */
+    short number;                   /**< The unique ID of the screen */
+    short supported_modes;          /**< The display modes supported on this screen */   
+    short font_size_count;          /**< The number of supported font sizes */
+    p_extent font_sizes;            /**< Pointer to a list of t_extent listing all
+                                            supported font sizes (in pixels) */
+    short resolution_count;         /**< The number of supported display resolutions */
+    p_extent resolutions;           /**< Pointer to a list of t_extent listing all 
+                                            supported display resolutions (in pixels) */
 } t_txt_capabilities, *p_txt_capabilities;
 
 

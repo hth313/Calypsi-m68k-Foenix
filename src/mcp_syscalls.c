@@ -997,6 +997,23 @@ short sys_txt_set_region( short screen, p_rect region ) {
 }
 
 /*
+ * Gets the origin and size of the rectangle describing the current region.
+ *
+ * Inputs:
+ *  screen = screenID of the screen
+ *  region = pointer to t_rect structure (upper left corner, width, height)
+ *              coordinates in character cells. (0,0) is upper-left,
+ *              size 0 means fullscreen
+ *
+ * Returns:
+ *  0 on success, any other number means error
+ */
+short sys_txt_get_region( short screen, p_rect region ) {
+    t_syscall_params params = {.arg1 = screen, .arg2 = (uint32_t)region};
+    return syscall(KFN_TXT_GET_REGION, &params);
+}
+
+/*
  * Set the foreground and background color for subsequent printing to the screen
  *
  * Inputs:
