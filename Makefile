@@ -8,7 +8,7 @@ ALL_LIBS = foenix-sc-sd.a foenix-sc-ld.a foenix-lc-sd.a foenix-lc-ld.a
 # Common source files
 ASM_SRCS = startup-user.s startup-morfe.s syscall.s
 C_SRCS = mcp_syscalls.c $(STUB_SRCS)
-STUB_SRCS = stub_exit.c stub_open.c stub_puts.c stub_write.c stub_close.c stub_lseek.c stub_putchar.c stub_read.c
+STUB_SRCS = stub_exit.c stub_open.c stub_write.c stub_close.c stub_lseek.c stub_read.c
 
 # Object files
 OBJS_SC_SD = $(ASM_SRCS:%.s=%-sc-sd.o) $(C_SRCS:%.c=%-sc-sd.o)
