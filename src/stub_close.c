@@ -4,8 +4,6 @@
 #include "constants.h"
 
 int _Stub_close(int h) {
-    if (h > STDERR_FILENO) {
-        sys_fsys_close(h - FILE_TABLE_OFFSET);
-    }
-    return 0;
+  sys_fsys_close(h - FILE_TABLE_OFFSET);
+  return 0;
 }
