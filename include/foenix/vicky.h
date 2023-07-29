@@ -268,7 +268,9 @@ typedef struct sprite { // all sprite registers are write ONLY
   uint16_t y;
 } sprite_t;
 
-#define SPRITE_SIZE   1024
+#define SPRITE_SIZE 1024
+#define SPRITE_COUNT 64
+#define SPRITE_HEIGHT 32
 
 // ----------------------------------------------------------------------
 //
