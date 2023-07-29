@@ -103,7 +103,7 @@ struct _Vicky {
         uint16_t  :3;
         uint16_t compare:12;
       };
-      uint16_t comtrol;
+      uint16_t control;
     } line_interrupt[4]; // note: indexed style only works on 16 bit system
     union {
       struct {
