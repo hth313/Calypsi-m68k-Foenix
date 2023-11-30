@@ -303,7 +303,7 @@ struct _CompleteVicky {
     sprite_t sprite[64];          // sprite registers offset 0x1000
     char _sprite_skip[0x1000];
   };
-  lut_t lut;                      // lut registers offset 0x2000
+  lut_t lut[8];                   // lut registers offset 0x2000
 };
 
 // Vicky base address has been set up by C startup.
