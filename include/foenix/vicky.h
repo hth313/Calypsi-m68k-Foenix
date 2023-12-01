@@ -180,15 +180,28 @@ typedef struct tilemap { // all tilemap registers are write ONLY
     };
     uint16_t  control;
   };
+  uint16_t unused;
   vram_ptr data;
   uint16_t width;
   uint16_t height;
-  struct {
-    uint16_t scroll:4;
-    uint16_t pos:10;
-    uint16_t  :1;
-    uint16_t neg:1;
-  } x, y;
+  union {
+    struct {
+      uint16_t x_scroll:4;
+      uint16_t x_pos:10;
+      uint16_t  :1;
+      uint16_t x_neg : 1;
+    };
+    uint16_t x;
+  };
+  union {
+    struct {
+      uint16_t y_scroll:4;
+      uint16_t y_pos:10;
+      uint16_t  :1;
+      uint16_t y_neg : 1;
+    };
+    uint16_t y;
+  };
 } tilemap_t;
 
 // Bits for control register
@@ -201,10 +214,13 @@ typedef struct tilemap { // all tilemap registers are write ONLY
 //
 // ----------------------------------------------------------------------
 
-typedef struct tileset {
-  uint32_t addy:22;
-  uint32_t  :5;
-  uint32_t stride_256:1;
+typedef union tileset {
+  struct {
+    uint32_t addy:22;
+    uint32_t  :5;
+    uint32_t stride_256 : 1;
+  };
+  uint32_t tileset_register;
 } tileset_t;
 
 // Adjust video RAM address for Vicky.
@@ -219,11 +235,11 @@ inline vram_ptr vicky_address_b (vram_ptr p) {
 
 // ----------------------------------------------------------------------
 //
-// Bitmap plane
+// Bitmap
 //
 // ----------------------------------------------------------------------
 
-typedef struct bitplane {
+typedef struct bitmap {
   union {
     struct {
       uint32_t enable:1;
@@ -236,7 +252,7 @@ typedef struct bitplane {
     uint32_t control;
   };
   vram_ptr start;
-} bitplane_t;
+} bitmap_t;
 
 // ----------------------------------------------------------------------
 //
@@ -288,8 +304,8 @@ struct _CompleteVicky {
     char _vicky_skip[0x0100];
   };
   union {
-    bitplane_t bitplane[2];       // bitplane registers offset 0x0100
-    char _bitplane_skip[0x100];
+    bitmap_t bitmap[2];           // bitmap registers offset 0x0100
+    char _bitmap_skip[0x100];
   };
   union {
     tilemap_t tilemap[4];         // timemap registers offset 0x0200
@@ -313,7 +329,7 @@ extern struct _CompleteVicky volatile *_Vicky;
 // Convenience access macros
 #define Vicky      _CompleteVicky.vicky
 #define Sprite     _CompleteVicky.sprite
-#define Bitplane   _CompleteVicky.bitplane
+#define Bitmap     _CompleteVicky.bitmap
 #define Tileset    _CompleteVicky.tileset
 #define Tilemap    _CompleteVicky.tilemap
 #define LUT        _CompleteVicky.lut
