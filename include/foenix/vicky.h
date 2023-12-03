@@ -174,9 +174,9 @@ enum cursor_flash_rate {
 typedef struct tilemap { // all tilemap registers are write ONLY
   union {
     struct {
-      uint16_t layer_enable:1;
-      uint16_t  :5;
-      uint16_t collision_on:1;
+      uint16_t layer_enable : 1;
+      uint16_t              : 5;
+      uint16_t collision_on : 1;
     };
     uint16_t  control;
   };
@@ -298,7 +298,13 @@ typedef struct lut {
   uint8_t data[256][4];
 } lut_t;
 
-struct _CompleteVicky {
+// ----------------------------------------------------------------------
+//
+// Complete Vicky
+//
+// ----------------------------------------------------------------------
+
+struct CompleteVicky {
   union {                         // base registers
     struct _Vicky vicky;
     char _vicky_skip[0x0100];
@@ -323,7 +329,7 @@ struct _CompleteVicky {
 };
 
 // Vicky base address has been set up by C startup.
-extern struct _CompleteVicky volatile *_Vicky;
+extern struct CompleteVicky volatile *_Vicky;
 #define _CompleteVicky (*_Vicky)
 
 // Convenience access macros

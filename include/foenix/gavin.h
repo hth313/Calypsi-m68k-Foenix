@@ -8,7 +8,7 @@
 #include <foenix/timer.h>
 #include <foenix/uart.h>
 
-struct _CompleteGavin {
+struct CompleteGavin {
   union {
     struct _SystemControl system_control;
     char _skip_system_control[0x80];
@@ -44,7 +44,7 @@ struct _CompleteGavin {
 };
 
 // Vicky base address has been set up by C startup.
-extern struct _CompleteGavin volatile *_Gavin;
+extern struct CompleteGavin volatile *_Gavin;
 #define _CompleteGavin (*_Gavin)
 
 #define SystemControl        _CompleteGavin.system_control
