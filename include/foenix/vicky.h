@@ -56,24 +56,22 @@ struct _Vicky {
 #define GAMMA_ENABLE               0x00020000
 #define DISPLAY_SLEEP              0x00040000
   };
-  struct {
-    union {                     // border control register
-      struct {
-        uint32_t enable:1;
-        uint32_t  :3;
-        uint32_t scroll_x:3;
-        uint32_t  :1;
-        uint32_t x:6;
-        uint32_t  :2;
-        uint32_t y:6;
-        uint32_t  :2;
-        uint32_t  :8;
-      };
-      uint32_t control;
+  union {                       // border control register
+    struct {
+      uint32_t enable:1;
+    uint32_t  :3;
+      uint32_t scroll_x:3;
+    uint32_t  :1;
+      uint32_t x:6;
+    uint32_t  :2;
+      uint32_t y:6;
+    uint32_t  :2;
+    uint32_t  :8;
     };
-    uint32_t color;
-  } border;
-  uint32_t background_color;     // background color register
+    uint32_t border_control;
+  };
+  uint32_t border_color;
+  uint32_t background_color;    // background color register
   union {                       // cursor control register
     struct {
       uint32_t enable:1;
