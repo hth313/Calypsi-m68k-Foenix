@@ -12,7 +12,7 @@ extern unsigned long _VickyBaseVRAM;
 //
 // ----------------------------------------------------------------------
 
-typedef uint8_t * vram_ptr;
+typedef uint8_t __attribute__((far)) * vram_ptr;
 
 struct _Vicky {
   union {                       // master control register
@@ -90,7 +90,7 @@ struct _Vicky {
     struct {
       uint32_t x:16;
       uint32_t y:16;
-    };
+    } cursor;
     uint32_t cursor_position;
   };
 #if __FOENIX_A2560_REGISTER_SIZE__ == 16
