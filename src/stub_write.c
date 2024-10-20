@@ -1,6 +1,7 @@
 #include <mcp/syscalls.h>
 #include <stddef.h>
 #include <calypsi/stubs.h>
+#include <errno.h>
 #include "constants.h"
 
 size_t _Stub_write(int h, const void *p, size_t l) {

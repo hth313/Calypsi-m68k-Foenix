@@ -92,7 +92,7 @@ static int _map_oflags(int oflag) {
     return result;
 }
 
-static void map_errno(int result) {
+static int map_errno(int result) {
     switch (result) {
         case FSYS_ERR_DISK_ERR:
         case FSYS_ERR_INT_ERR:
@@ -123,7 +123,7 @@ static void map_errno(int result) {
         case FSYS_ERR_NOT_ENOUGH_CORE:
             return -EFAULT;
         default:
-            return -EIO);
+            return -EIO;
     }
 }
 
