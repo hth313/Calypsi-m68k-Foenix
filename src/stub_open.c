@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <fcntl.h>
-#include <stubs.h>
+#include <calypsi/stubs.h>
 #include <errno.h>
 #include "constants.h"
 
@@ -99,39 +99,31 @@ static void map_errno(int result) {
         case FSYS_ERR_NOT_READY:
         case FSYS_ERR_NOT_ENABLED:
         case FSYS_ERR_NO_FILESYSTEM:
-            __set_errno(ENODEV);
-            break;
+            return -ENODEV;
         case FSYS_ERR_NO_FILE:
         case FSYS_ERR_NO_PATH:
-            __set_errno(ENOENT);
-            break;
+            return -ENOENT;
         case FSYS_ERR_INVALID_NAME:
         case FSYS_ERR_INVALID_OBJECT:
         case FSYS_ERR_INVALID_DRIVE:
         case FSYS_ERR_INVALID_PARAMETER:
-            __set_errno(EINVAL);
-            break;
+            return -EINVAL;
         case FSYS_ERR_DENIED:
         case FSYS_ERR_WRITE_PROTECTED:
-            __set_errno(EACCES);
-            break;
+            return -EACCES;
         case FSYS_ERR_EXIST:
-            __set_errno(EEXIST);
+            return -EEXIST;
             break;
         case FSYS_ERR_TOO_MANY_OPEN_FILES:
-            __set_errno(ENFILE);
-            break;
+            return -ENFILE;
         case FSYS_ERR_LOCKED:
-            __set_errno(ETXTBSY);
-            break;
+            return -ETXTBSY;
         case FSYS_ERR_MKFS_ABORTED:
         case FSYS_ERR_TIMEOUT:
         case FSYS_ERR_NOT_ENOUGH_CORE:
-            __set_errno(EFAULT);
-            break;
+            return -EFAULT;
         default:
-            __set_errno(EIO);
-            break;
+            return -EIO);
     }
 }
 
@@ -143,8 +135,7 @@ int _Stub_open(const char *path, int oflag, ...) {
 
     int result = sys_fsys_open(path, mode);
     if (result < 0) {
-        map_errno(result);
-        return -1;
+        return map_errno(result);
     } else {
         return result + FILE_TABLE_OFFSET;
     }

@@ -1,6 +1,7 @@
 #include <mcp/syscalls.h>
 #include <stddef.h>
-#include <stubs.h>
+#include <calypsi/stubs.h>
+#include <errno.h>
 #include "constants.h"
 
 size_t _Stub_read(int h, void *p, size_t l) {
@@ -9,6 +10,6 @@ size_t _Stub_read(int h, void *p, size_t l) {
     } else if (h > STDERR_FILENO) {
         return sys_chan_read(h - FILE_TABLE_OFFSET, p, l);
     } else {
-        return -1;
+        return -EBADF;
     }
 }

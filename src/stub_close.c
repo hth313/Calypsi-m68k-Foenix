@@ -1,6 +1,6 @@
 #include <mcp/syscalls.h>
 #include <stddef.h>
-#include <stubs.h>
+#include <calypsi/stubs.h>
 #include "constants.h"
 
 int _Stub_close(int h) {
