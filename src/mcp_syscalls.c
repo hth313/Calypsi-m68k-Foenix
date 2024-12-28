@@ -56,7 +56,7 @@ void sys_int_disable(unsigned short n) {
  *
  * NOTE: this is actually provided in the low level assembly
  */
-void sys_int_enable_all() {
+void sys_int_enable_all(void) {
     t_syscall_params params = {0};
     syscall(KFN_INT_ENABLE_ALL, &params);
 }
@@ -66,7 +66,7 @@ void sys_int_enable_all() {
  *
  * NOTE: this is actually provided in the low level assembly
  */
-void sys_int_disable_all() {
+void sys_int_disable_all(void) {
     t_syscall_params params = {0};
     syscall(KFN_INT_DISABLE_ALL, &params);
 }
@@ -682,7 +682,7 @@ short sys_proc_run( const char *path, int argc, char *argv[]) {
  * Returns:
  *  Address of first byte of non-accessible RAM area
  */
-unsigned long sys_mem_get_ramtop() {
+unsigned long sys_mem_get_ramtop(void) {
     t_syscall_params params = {0};
     return syscall(KFN_MEM_GET_RAMTOP, &params);
 }
@@ -710,7 +710,7 @@ unsigned long sys_mem_reserve( unsigned long size ) {
  * Returns:
  *  none
  */
-void sys_proc_elevate() {
+void sys_proc_elevate(void) {
     t_syscall_params params = {0};
     syscall(KFN_PROC_ELEVATE, &params);
 }
@@ -759,7 +759,7 @@ const char *sys_var_get( const char *name ) {
  * Returns:
  * the number of jiffies since the last reset
  */
-long sys_time_jiffies() {
+long sys_time_jiffies(void) {
     t_syscall_params params = {0};
     return syscall(KFN_TIME_JIFFIES, &params);
 }
@@ -789,7 +789,7 @@ void sys_time_getrtc(p_time time) {
 /*
  * Return the next scan code from the keyboard... 0 if nothing pending
  */
-unsigned short sys_kbd_scancode() {
+unsigned short sys_kbd_scancode(void) {
     t_syscall_params params = {0};
     return syscall(KFN_KBD_SCANCODE, &params);
 }
@@ -885,7 +885,7 @@ short sys_txt_set_mode( short screen, short mode ) {
  * Returns:
  *  0 on succcess or any other number on error
  */
-void sys_txt_setsizes() {
+void sys_txt_setsizes(void) {
     t_syscall_params params = {0};
     syscall(KFN_TXT_SETSIZES, &params);
 }
