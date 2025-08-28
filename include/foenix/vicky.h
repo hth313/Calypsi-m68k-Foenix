@@ -93,7 +93,7 @@ struct _Vicky {
     } cursor;
     uint32_t cursor_position;
   };
-#if __FOENIX_A2560_REGISTER_SIZE__ == 16
+#if defined(__CALYPSI_TARGET_SYSTEM_A2560U__)
   union {                       // line interrupt register (4 of them)
     union {
       struct {
@@ -132,7 +132,7 @@ struct _Vicky {
   uint16_t FPGA_version[2];
   uint16_t FPGA_chip_part[2];
 #endif
-#if __FOENIX_A2560_REGISTER_SIZE__ == 32
+#if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
   union {                       // line interrupt register (4 of them)
     struct {
       uint32_t enable0:1;
