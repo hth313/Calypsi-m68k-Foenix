@@ -19,7 +19,7 @@
               .extern _NearBaseAddress
 #endif
 
-#ifdef __CALYPSI_TARGET_SYSTEM_FOENIX__
+#if defined (__CALYPSI_TARGET_SYSTEM_A2560K__) || defined (__CALYPSI_TARGET_SYSTEM_A2560U__)
               .extern _Gavin
               .extern _Beatrix
               .extern _Vicky
