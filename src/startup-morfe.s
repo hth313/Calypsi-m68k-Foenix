@@ -87,7 +87,7 @@ __call_heap_initialize:
               call    __heap_initialize
 
               .section libcode, noroot, noreorder
-#ifdef __CALYPSI_TARGET_SYSTEM_FOENIX__
+#if defined (__CALYPSI_TARGET_SYSTEM_A2560K__) || defined (__CALYPSI_TARGET_SYSTEM_A2560U__)
               .pubweak _Gavin_initialize
 _Gavin_initialize:
               move.l  #GavinLow,a0  ; assume A2560U system
@@ -113,7 +113,7 @@ _Gavin_initialize:
               move.l  a1,_Vicky
               move.l  d0,_VickyBaseVRAM
 #endif // __CALYPSI_DATA_MODEL_SMALL__
-#endif // __CALYPSI_TARGET_SYSTEM_FOENIX__
+#endif // __CALYPSI_TARGET_SYSTEM_A2560K__ || __CALYPSI_TARGET_SYSTEM_A2560U__
 
               .section libcode, root, noreorder
               moveq.l #0,d0         ; argc = 0
