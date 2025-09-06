@@ -42,7 +42,7 @@
 ;;;
 ;;; __program_start - actual start point of the program
 ;;;
-;;; Initialize sections and call main(). 
+;;; Initialize sections and call main().
 ;;;
 ;;; ***************************************************************************
 
@@ -113,6 +113,6 @@ _Gavin_initialize:
 #endif // __CALYPSI_TARGET_SYSTEM_FOENIX__
 
               .section libcode, root, noreorder
-	      movem.l (4,sp),d0/a0
-	      call    main
+              movem.l (4,sp),d0/a0
+              call    main
               jump    exit
