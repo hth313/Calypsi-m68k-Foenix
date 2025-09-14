@@ -19,10 +19,10 @@ struct _UART {
   };
   union {          // interrupt enable
     struct {
-      uint8_t interrupt_enable_receive      : 1;
-      uint8_t interrupt_enable_transmit     : 1;
-      uint8_t interrupt_enable_line_status  : 1;
       uint8_t interrupt_enable_modem_status : 1;
+      uint8_t interrupt_enable_line_status  : 1;
+      uint8_t interrupt_enable_transmit     : 1;
+      uint8_t interrupt_enable_receive      : 1;
     };
     uint8_t ier;
 #define INTERRUPT_ENABLE_RECEIVE      0x01
@@ -33,21 +33,21 @@ struct _UART {
   union {
     union {
       struct {
-        uint8_t interrupt_status   : 1;
-        uint8_t interrupt_priority : 3;
-        uint8_t                    : 2;
         uint8_t fifos_enabled      : 2;     // ????
+        uint8_t                    : 2;
+        uint8_t interrupt_priority : 3;
+        uint8_t interrupt_status   : 1;
       };
       uint8_t isr;       // interrupt status (read)
     };
     union {
       struct {
-        uint8_t fifo_enable         : 1;
-        uint8_t reset_fifo_receive  : 1;
-        uint8_t reset_fifo_transmit : 1;
-        uint8_t dma_mode            : 1;
-        uint8_t                     : 2;
         uint8_t receive_trigger     : 2;
+        uint8_t                     : 2;
+        uint8_t dma_mode            : 1;
+        uint8_t reset_fifo_transmit : 1;
+        uint8_t reset_fifo_receive  : 1;
+        uint8_t fifo_enable         : 1;
       };
       uint8_t fcr;       // FIFO control (write)
     };

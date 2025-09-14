@@ -11,13 +11,13 @@
 struct _SystemControl {
   union {
     struct {
-      uint16_t power_led         : 1;
-      uint16_t sd_led            : 1;
-      uint16_t                   : 2;
-      uint16_t buzzer            : 1;
-      uint16_t                   : 3;
-      uint16_t                   : 7;
       uint16_t manual_reset      : 1;
+      uint16_t                   : 7;
+      uint16_t                   : 3;
+      uint16_t buzzer            : 1;
+      uint16_t                   : 2;
+      uint16_t sd_led            : 1;
+      uint16_t power_led         : 1;
     };
     uint16_t control;
 #define POWER_LED      0x0001
@@ -28,10 +28,10 @@ struct _SystemControl {
   uint16_t security_word;
   union {
     struct {
-      uint16_t lfsr_enable       : 1;
-      uint16_t seed_write        : 1;
-      uint16_t                   : 6;
       uint16_t                   : 8;
+      uint16_t                   : 6;
+      uint16_t seed_write        : 1;
+      uint16_t lfsr_enable       : 1;
     };
     uint16_t lfsr_control;
 #define LFSR_ENABLE     0x0001
@@ -41,17 +41,17 @@ struct _SystemControl {
   uint16_t random;
   union {
     struct {
-      uint16_t lfsr_ctrl         : 7;
       uint16_t lfsr_done         : 1;
+      uint16_t lfsr_ctrl         : 7;
     };
     uint16_t lfsr_status;
   };
   union {
     struct {
-      uint16_t id                : 4;
-      uint16_t                   : 1;
-      uint16_t speed             : 3;
       uint16_t cpu_id            : 8;
+      uint16_t speed             : 3;
+      uint16_t                   : 1;
+      uint16_t id                : 4;
       };
     uint16_t machine_id;
   };

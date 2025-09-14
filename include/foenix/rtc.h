@@ -28,42 +28,42 @@ struct _RTC {
   uint8_t _padding_year;
   union {
     struct {
-      uint8_t res    : 4;
-      uint8_t wd     : 3;
       uint8_t        : 1;
+      uint8_t wd     : 3;
+      uint8_t res    : 4;
     };
     uint8_t rates;
   };
   uint8_t _padding_rates;
   union {
     struct {
-      uint8_t abe    : 1;
-      uint8_t pwrie  : 1;
-      uint8_t pie    : 1;
-      uint8_t aie    : 1;
       uint8_t        : 4;
+      uint8_t aie    : 1;
+      uint8_t pie    : 1;
+      uint8_t pwrie  : 1;
+      uint8_t abe    : 1;
     };
     uint8_t enables;
   };
   uint8_t _padding_enabled;
   union {
     struct {
-      uint8_t bvf    : 1;
-      uint8_t pwrf   : 1;
-      uint8_t pf     : 1;
-      uint8_t af     : 1;
       uint8_t        : 4;
+      uint8_t af     : 1;
+      uint8_t pf     : 1;
+      uint8_t pwrf   : 1;
+      uint8_t bvf    : 1;
     };
     uint8_t flags;
   };
   uint8_t _padding_flags;
   union {
     struct {
-      uint8_t dse    : 1;
-      uint8_t t12_24 : 1;
-      uint8_t stopn  : 1;
-      uint8_t uti    : 1;
       uint8_t        : 4;
+      uint8_t uti    : 1;
+      uint8_t stopn  : 1;
+      uint8_t t12_24 : 1;
+      uint8_t dse    : 1;
     };
     uint8_t control;
   };

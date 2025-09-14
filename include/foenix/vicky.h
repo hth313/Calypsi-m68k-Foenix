@@ -17,26 +17,26 @@ typedef uint8_t __attribute__((far)) * vram_ptr;
 struct _Vicky {
   union {                       // master control register
     struct {
-      uint32_t text_mode_enable         : 1;
-      uint32_t text_mode_overlay_enable : 1;
-      uint32_t graphic_mode_enable      : 1;
-      uint32_t bitmap_engine_enable     : 1;
-      uint32_t tile_engine_enable       : 1;
-      uint32_t sprite_engine_enable     : 1;
-      uint32_t                          : 1;
-      uint32_t disable_video_display    : 1;
-      uint32_t video_mode0              : 1;
-      uint32_t video_mode1              : 1;
-      uint32_t double_pixel_mode        : 1;
-      uint32_t                          : 2;
-      uint32_t gamma_dipswitch_value    : 1;   // read-only
-      uint32_t hires_dipswitch_value    : 1;   // read-only
-      uint32_t active_clock             : 1;   // read-only
-      uint32_t gamma_choice_input       : 1;
-      uint32_t gamma_enable             : 1;
-      uint32_t display_sleep            : 1;   // turn sync off
-      uint32_t                          : 5;
       uint32_t                          : 8;
+      uint32_t                          : 5;
+      uint32_t display_sleep            : 1;   // turn sync off
+      uint32_t gamma_enable             : 1;
+      uint32_t gamma_choice_input       : 1;
+      uint32_t active_clock             : 1;   // read-only
+      uint32_t hires_dipswitch_value    : 1;   // read-only
+      uint32_t gamma_dipswitch_value    : 1;   // read-only
+      uint32_t                          : 2;
+      uint32_t double_pixel_mode        : 1;
+      uint32_t video_mode1              : 1;
+      uint32_t video_mode0              : 1;
+      uint32_t disable_video_display    : 1;
+      uint32_t                          : 1;
+      uint32_t sprite_engine_enable     : 1;
+      uint32_t tile_engine_enable       : 1;
+      uint32_t bitmap_engine_enable     : 1;
+      uint32_t graphic_mode_enable      : 1;
+      uint32_t text_mode_overlay_enable : 1;
+      uint32_t text_mode_enable         : 1;
     };
     uint32_t master_control;
 #define TEXT_MODE_ENABLE           0x00000001
@@ -58,15 +58,15 @@ struct _Vicky {
   };
   union {                       // border control register
     struct {
-      uint32_t enable:1;
-    uint32_t  :3;
-      uint32_t scroll_x:3;
-    uint32_t  :1;
-      uint32_t x:6;
+    uint32_t  :8;
     uint32_t  :2;
       uint32_t y:6;
     uint32_t  :2;
-    uint32_t  :8;
+      uint32_t x:6;
+    uint32_t  :1;
+      uint32_t scroll_x:3;
+    uint32_t  :3;
+      uint32_t enable:1;
     };
     uint32_t border_control;
   };
@@ -74,22 +74,22 @@ struct _Vicky {
   uint32_t background_color;    // background color register
   union {                       // cursor control register
     struct {
-      uint32_t enable:1;
-      uint32_t flash_rate:2;    // see 'enum cursor_flash_rate' below
-      uint32_t font_set:2;      // see 'enum cursor_font_size' below
-      uint32_t font_size:1;
-      uint32_t  :2;
-      uint32_t x_offset:8;
-      uint32_t cursor_char:8;
-      uint32_t background_color:4;
       uint32_t foreground_color:4;
+      uint32_t background_color:4;
+      uint32_t cursor_char:8;
+      uint32_t x_offset:8;
+      uint32_t  :2;
+      uint32_t font_size:1;
+      uint32_t font_set:2;      // see 'enum cursor_font_size' below
+      uint32_t flash_rate:2;    // see 'enum cursor_flash_rate' below
+      uint32_t enable:1;
     };
     uint32_t reg;
   } cursor_control;
   union {                       // cursor position register
     struct {
-      uint32_t x:16;
       uint32_t y:16;
+      uint32_t x:16;
     } cursor;
     uint32_t cursor_position;
   };
@@ -97,28 +97,28 @@ struct _Vicky {
   union {                       // line interrupt register (4 of them)
     union {
       struct {
-        uint16_t enable:1;
-        uint16_t  :3;
         uint16_t compare:12;
+        uint16_t  :3;
+        uint16_t enable:1;
       };
       uint16_t control;
     } line_interrupt[4]; // note: indexed style only works on 16 bit system
     union {
       struct {
-        uint16_t enable0:1;
-        uint16_t  :3;
-        uint16_t compare0:12;
-        uint16_t enable1:1;
-        uint16_t  :3;
         uint16_t compare1:12;
+        uint16_t  :3;
+        uint16_t enable1:1;
+        uint16_t compare0:12;
+        uint16_t  :3;
+        uint16_t enable0:1;
       } line_interrupt_01;
       struct {
-        uint16_t enable2:1;
-        uint16_t  :3;
-        uint16_t compare2:12;
-        uint16_t enable3:1;
-        uint16_t  :3;
         uint16_t compare3:12;
+        uint16_t  :3;
+        uint16_t enable3:1;
+        uint16_t compare2:12;
+        uint16_t  :3;
+        uint16_t enable2:1;
       } line_interrupt_23;
       uint16_t reg0;
       uint16_t reg1;
@@ -135,20 +135,20 @@ struct _Vicky {
 #if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
   union {                       // line interrupt register (4 of them)
     struct {
-      uint32_t enable0:1;
-      uint32_t  :3;
-      uint32_t compare0:12;
-      uint32_t enable1:1;
-      uint32_t  :3;
       uint32_t compare1:12;
+      uint32_t  :3;
+      uint32_t enable1:1;
+      uint32_t compare0:12;
+      uint32_t  :3;
+      uint32_t enable0:1;
     } line_interrupt_01;
     struct {
-      uint32_t enable2:1;
-      uint32_t  :3;
-      uint32_t compare2:12;
-      uint32_t enable3:1;
-      uint32_t  :3;
       uint32_t compare3:12;
+      uint32_t  :3;
+      uint32_t enable3:1;
+      uint32_t compare2:12;
+      uint32_t  :3;
+      uint32_t enable2:1;
     } line_interrupt_23;
   };
 #endif
@@ -172,9 +172,9 @@ enum cursor_flash_rate {
 typedef struct tilemap { // all tilemap registers are write ONLY
   union {
     struct {
-      uint16_t layer_enable : 1;
-      uint16_t              : 5;
       uint16_t collision_on : 1;
+      uint16_t              : 5;
+      uint16_t layer_enable : 1;
     };
     uint16_t  control;
   };
@@ -184,19 +184,19 @@ typedef struct tilemap { // all tilemap registers are write ONLY
   uint16_t height;
   union {
     struct {
-      uint16_t x_scroll:4;
-      uint16_t x_pos:10;
-      uint16_t  :1;
       uint16_t x_neg : 1;
+      uint16_t  :1;
+      uint16_t x_pos:10;
+      uint16_t x_scroll:4;
     };
     uint16_t x;
   };
   union {
     struct {
-      uint16_t y_scroll:4;
-      uint16_t y_pos:10;
-      uint16_t  :1;
       uint16_t y_neg : 1;
+      uint16_t  :1;
+      uint16_t y_pos:10;
+      uint16_t y_scroll:4;
     };
     uint16_t y;
   };
@@ -214,9 +214,9 @@ typedef struct tilemap { // all tilemap registers are write ONLY
 
 typedef union tileset {
   struct {
-    uint32_t addy:22;
-    uint32_t  :5;
     uint32_t stride_256 : 1;
+    uint32_t  :5;
+    uint32_t addy:22;
   };
   uint32_t tileset_register;
 } tileset_t;
@@ -240,12 +240,12 @@ inline vram_ptr vicky_address_b (vram_ptr p) {
 typedef struct bitmap {
   union {
     struct {
-      uint32_t enable:1;
-      uint32_t lut:3;
-      uint32_t  :2;
-      uint32_t collision:1;
-      uint32_t  :1;
       uint32_t  :24;
+      uint32_t  :1;
+      uint32_t collision:1;
+      uint32_t  :2;
+      uint32_t lut:3;
+      uint32_t enable:1;
     };
     uint32_t control;
   };
@@ -261,11 +261,11 @@ typedef struct bitmap {
 typedef struct sprite { // all sprite registers are write ONLY
   union {
     struct {
-      uint16_t enable : 1;
-      uint16_t lut : 3;
-      uint16_t depth : 3;
-      uint16_t collision_enable : 1;
       uint16_t addy_low : 8;
+      uint16_t collision_enable : 1;
+      uint16_t depth : 3;
+      uint16_t lut : 3;
+      uint16_t enable : 1;
     };
     uint16_t control;
 #define SPRITE_ENABLE               0x01
