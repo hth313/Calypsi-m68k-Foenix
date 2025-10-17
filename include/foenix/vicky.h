@@ -336,9 +336,13 @@ struct CompleteVicky {
   lut_t lut[8];                   // lut registers offset 0x2000
 };
 
-// Vicky base address has been set up by C startup.
-extern struct CompleteVicky volatile *_Vicky;
-#define _CompleteVicky (*_Vicky)
+#if defined(__CALYPSI_TARGET_SYSTEM_A2560U__)
+#define _CompleteVicky (*((struct _CompleteVicky volatile*)0x00b40000))
+#endif
+
+#if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
+#define _CompleteVicky (*((struct _CompleteVicky volatile*)0xfec40000))
+#endif
 
 // Convenience access macros
 #define Vicky      _CompleteVicky.vicky

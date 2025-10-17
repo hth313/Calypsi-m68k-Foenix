@@ -43,13 +43,12 @@ struct _CompleteGavin {
   struct _UART uart;
 };
 
-// Vicky base address has been set up by C startup.
 #if defined(__CALYPSI_TARGET_SYSTEM_A2560U__)
-#define _CompleteGavin ((struct _CompleteGavin volatile*)0x00b00000)
+#define _CompleteGavin (*((struct _CompleteGavin volatile*)0x00b00000))
 #endif
 
 #if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
-#define _CompleteGavin ((struct _CompleteGavin volatile*)0xfec00000)
+#define _CompleteGavin (*((struct _CompleteGavin volatile*)0xfec00000))
 #endif
 
 #define SystemControl        _CompleteGavin.system_control

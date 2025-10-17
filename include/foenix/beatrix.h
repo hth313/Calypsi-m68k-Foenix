@@ -56,13 +56,12 @@ struct _CompleteBeatrix {
   };
 };
 
-// Vicky base address has been set up by C startup.
 #if defined(__CALYPSI_TARGET_SYSTEM_A2560U__)
-#define _CompleteBeatrix ((struct _CompleteBeatrix volatile*)0x00b20000)
+#define _CompleteBeatrix (*((struct _CompleteBeatrix volatile*)0x00b20000))
 #endif
 
 #if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
-#define _CompleteBeatrix ((struct _CompleteBeatrix volatile*)0xfec20000)
+#define _CompleteBeatrix (*((struct _CompleteBeatrix volatile*)0xfec20000))
 #endif
 
 #define PSG                  _CompleteBeatrix.psg
