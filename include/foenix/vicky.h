@@ -3,8 +3,15 @@
 
 #include <stdint.h>
 
-extern unsigned long _VickyBaseVRAM;
+#if defined(__CALYPSI_TARGET_SYSTEM_A2560U__)
+#define VRAM_BASE 0x00c00000
+#endif
+
+#if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
+#define VRAM_BASE 0x00800000
 #define VRAM_BASE_B 0x00c00000
+#endif
+
 
 // ----------------------------------------------------------------------
 //
@@ -223,13 +230,16 @@ typedef union tileset {
 
 // Adjust video RAM address for Vicky.
 inline vram_ptr vicky_address (vram_ptr p) {
-  return (vram_ptr) ((long)p - _VickyBaseVRAM);
+  return (vram_ptr) ((long)p - VRAM_BASE);
 }
 
+
+#if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
 // Adjust video RAM address for Vicky buffer B (32 bit systems only)
 inline vram_ptr vicky_address_b (vram_ptr p) {
   return (vram_ptr) ((long)p - VRAM_BASE_B);
 }
+#endif
 
 // ----------------------------------------------------------------------
 //
