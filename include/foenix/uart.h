@@ -77,14 +77,14 @@ struct _UART {
 #define MCR_AFE              0x20
 
   uint8_t lsr;         // line status
-#define receive_data_ready   0x01
-#define overrun_error        0x02
-#define parity_error         0x04
-#define framing_error        0x08
-#define break_interrupt      0x10
-#define transmit_hold_empty  0x20
-#define transmit_empty       0x40
-#define fifo_data_error      0x80
+#define RECEIVE_DATA_READY   0x01
+#define OVERRUN_ERROR        0x02
+#define PARITY_ERROR         0x04
+#define FRAMING_ERROR        0x08
+#define BREAK_INTERRUPT      0x10
+#define TRANSMIT_HOLD_EMPTY  0x20
+#define TRANSMIT_EMPTY       0x40
+#define FIFO_DATA_ERROR      0x80
 
   uint8_t msr;         // modem status
   uint8_t spr;         // scratch pad
