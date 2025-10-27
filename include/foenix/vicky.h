@@ -312,7 +312,7 @@ typedef struct lut {
 //
 // ----------------------------------------------------------------------
 
-struct CompleteVicky {
+struct _CompleteVicky {
   union {                         // base registers
     struct _Vicky vicky;
     char _vicky_skip[0x0100];
