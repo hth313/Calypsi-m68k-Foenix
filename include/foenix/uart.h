@@ -90,6 +90,7 @@ struct _UART {
   uint8_t spr;         // scratch pad
 };
 
+#if defined(__CALYPSI_TARGET_SYSTEM_A2560U__)
 #define BAUD_300     4167
 #define BAUD_1200    1042
 #define BAUD_2400     521
@@ -99,5 +100,16 @@ struct _UART {
 #define BAUD_38400     33
 #define BAUD_57600     21
 #define BAUD_115200    10
+#else
+#define BAUD_300      384
+#define BAUD_1200      96
+#define BAUD_2400      48
+#define BAUD_4800      24
+#define BAUD_9600      12
+#define BAUD_19200      6
+#define BAUD_38400      3
+#define BAUD_57600      2
+#define BAUD_115200     1
+#endif
 
 #endif // __A2560_UART_H__
