@@ -34,6 +34,8 @@
               .align  2
 __program_root_section:
 __program_start:
+              move.l d1,d6 ;; Save argc from MCP
+              move.l a1,a6 ;; Save argv from MCP              
               move.l  #.sectionEnd stack + 1,sp
 #ifdef __CALYPSI_DATA_MODEL_SMALL__
               lea.l   _NearBaseAddress.l,a4
@@ -67,6 +69,7 @@ __call_heap_initialize:
               call    __heap_initialize
 
               .section libcode, root, noreorder
-              movem.l (4,sp),d0/a0
+              move.l d6,d0 ;; Load argc from MCP
+              move.l a6,a0 ;; Load argv from MCP
               call    main
               jump    exit
