@@ -101,7 +101,7 @@ struct _Vicky {
     uint32_t cursor_position;
   };
 #if defined(__CALYPSI_TARGET_SYSTEM_A2560U__)
-  union {                       // line interrupt register (4 of them)
+  union {                       // line interrupt register (4 x 16 bit)
     union {
       struct {
         uint16_t compare:12;
@@ -140,7 +140,7 @@ struct _Vicky {
   uint16_t FPGA_chip_part[2];
 #endif
 #if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
-  union {                       // line interrupt register (4 of them)
+  union {                       // line interrupt register (2 x 32 bit)
     struct {
       uint32_t compare1:12;
       uint32_t  :3;
@@ -336,12 +336,27 @@ struct _CompleteVicky {
   lut_t lut[8];                   // lut registers offset 0x2000
 };
 
+struct _TextVicky {
+  union {
+    struct {
+      struct _Vicky vicky;
+      union {
+        uint32_t manager[2];
+      } font;
+    };
+    char _vicky_skip[0x0400];
+  };
+  uint32_t mouse_graphics[0x800];
+  // TBD
+};
+
 #if defined(__CALYPSI_TARGET_SYSTEM_A2560U__)
 #define _CompleteVicky (*((struct _CompleteVicky volatile*)0x00b40000))
 #endif
 
 #if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
-#define _CompleteVicky (*((struct _CompleteVicky volatile*)0xfec40000))
+#define _CompleteVicky (*((struct _CompleteVicky volatile*)0xfec80000))
+#define _TextVicky (*((struct _TextVicky volatile*)0xfec40000))
 #endif
 
 // Convenience access macros
@@ -351,5 +366,10 @@ struct _CompleteVicky {
 #define Tileset    _CompleteVicky.tileset
 #define Tilemap    _CompleteVicky.tilemap
 #define LUT        _CompleteVicky.lut
+
+#if defined(__CALYPSI_TARGET_SYSTEM_A2560K__)
+#define VickyA      _TextVicky.vicky
+#define VickyAfont  _TextVicky.font
+#endif
 
 #endif // __VICKY_H__
